@@ -3,7 +3,7 @@
 	import * as THREE from "three";
 	import * as noUiSlider from "nouislider";
 	import "nouislider/dist/nouislider.css";
-	import { selectedBone } from "../store";
+	import { selectedBone } from "../store/store";
 
 	interface SlierHTMLElement extends HTMLElement {
 		noUiSlider: any;

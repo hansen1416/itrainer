@@ -21,7 +21,7 @@
 		controlType,
 		currentRotation,
 		selectedBone,
-	} from "../../store";
+	} from "../../store/store";
 	import {
 		loadGLTF,
 		loadJSON,

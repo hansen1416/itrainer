@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { controlType } from "../store";
+	import { controlType } from "../store/store";
 
 	export let size: number = 24;
 	export let color: string = "#fff";

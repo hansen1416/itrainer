@@ -8,7 +8,7 @@
 </svelte:head>
 
 <div class="nav">
-	<a href="/">Home</a>
+	<a href="/gym">Gym</a>
 	<a href="/editor">Editor</a>
 	<a href="/recorder">recorder</a>
 </div>

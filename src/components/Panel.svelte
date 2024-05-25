@@ -9,7 +9,7 @@
 		controlType,
 		currentRotation,
 		selectedBone,
-	} from "../store";
+	} from "../store/store";
 	import WebStorage from "../lib/WebStorage";
 
 	const iconSize: number = 36;

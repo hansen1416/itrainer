@@ -146,3 +146,93 @@ export function rotateBones(
         }
     }
 }
+
+
+export function invokeCamera(videoElement: HTMLVideoElement, callback: () => void) {
+    /** @param {object} e */
+    const errorCallback = (e: any) => {
+        alert("camera error!!");
+        console.log(e);
+    };
+
+    const constraints = {
+        audio: false,
+        // facingMode: "user", // selfie camera
+        // facingMode: "environment", // back camera
+        video: {
+            frameRate: { ideal: 20, max: 30 },
+            width: { ideal: 640, max: 640 },
+            height: { ideal: 480, max: 480 },
+        },
+    };
+
+    const successCallback = (stream: MediaSource | Blob | MediaStream) => {
+        // Yay, now our webcam input is treated as a normal video and
+        // we can start having fun
+        try {
+            videoElement.srcObject = stream;
+
+            // console.log(stream_settings);
+        } catch (error) {
+            videoElement.src = window.URL.createObjectURL(stream as MediaSource | Blob);
+        }
+
+        if (callback) {
+            callback();
+        }
+    };
+    // @ts-ignore
+    navigator.getUserMedia =
+        (navigator as any).getUserMedia ||
+        (navigator as any).webkitGetUserMedia ||
+        (navigator as any).mozGetUserMedia ||
+        (navigator as any).msGetUserMedia;
+
+    if (navigator.mediaDevices) {
+        navigator.mediaDevices
+            .getUserMedia(constraints)
+            .then(successCallback, errorCallback);
+    } else if ((navigator as any).getUserMedia) {
+        (navigator as any).getUserMedia(constraints, successCallback, errorCallback);
+    } else {
+        alert("getUserMedia() is not supported in your browser");
+    }
+}
+
+
+
+export const BlazePoseKeypointsValues = {
+    NOSE: 0,
+    LEFT_EYE_INNER: 1,
+    LEFT_EYE: 2,
+    LEFT_EYE_OUTER: 3,
+    RIGHT_EYE_INNER: 4,
+    RIGHT_EYE: 5,
+    RIGHT_EYE_OUTER: 6,
+    LEFT_EAR: 7,
+    RIGHT_EAR: 8,
+    LEFT_RIGHT: 9,
+    RIGHT_LEFT: 10,
+    LEFT_SHOULDER: 11,
+    RIGHT_SHOULDER: 12,
+    LEFT_ELBOW: 13,
+    RIGHT_ELBOW: 14,
+    LEFT_WRIST: 15,
+    RIGHT_WRIST: 16,
+    LEFT_PINKY: 17,
+    RIGHT_PINKY: 18,
+    LEFT_INDEX: 19,
+    RIGHT_INDEX: 20,
+    LEFT_THUMB: 21,
+    RIGHT_THUMB: 22,
+    LEFT_HIP: 23,
+    RIGHT_HIP: 24,
+    LEFT_KNEE: 25,
+    RIGHT_KNEE: 26,
+    LEFT_ANKLE: 27,
+    RIGHT_ANKLE: 28,
+    LEFT_HEEL: 29,
+    RIGHT_HEEL: 30,
+    LEFT_FOOT_INDEX: 31,
+    RIGHT_FOOT_INDEX: 32,
+};
