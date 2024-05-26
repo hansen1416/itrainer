@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
-	import WebSocketClient from "../../../lib/WebSocketClient";
-	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";
+	import * as THREE from "three";
 
+	import WebSocketClient from "../../../lib/WebSocketClient";
+	import { loadDiva, loadScenery } from "../../../utils/ropes";
 	import { derived } from "svelte/store";
 	import {
 		diva,
@@ -21,11 +22,14 @@
 	let animation_played = false;
 
 	onMount(() => {
-		Promise.all([loadDiva($diva), loadScenery($scenery)])
+		Promise.all([
+			loadDiva($diva as THREE.Object3D),
+			loadScenery($scenery as THREE.Object3D),
+		])
 			.then(([fbx, room]) => {
-				diva.set(fbx);
+				diva.set(fbx as THREE.Object3D);
 
-				scenery.set(room);
+				scenery.set(room as THREE.Object3D);
 			})
 			.catch((err) => {
 				console.error(err);

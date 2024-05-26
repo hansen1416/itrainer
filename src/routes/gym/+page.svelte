@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
 	import { derived } from "svelte/store";
+	import * as THREE from "three";
 
 	import WebSocketClient from "../../lib/WebSocketClient";
 	// import Menu from "../../components/Menu.svelte";
-	import { loadDiva, loadScenery } from "../../utils/mediaLoader";
+	import { loadDiva, loadScenery } from "../../utils/ropes";
 	import {
 		diva,
 		scenery,
@@ -24,11 +25,13 @@
 	onMount(() => {
 		// wsClient = $websocket;
 		// we need store to keep diva and scenery
-		Promise.all([loadDiva($diva), loadScenery($scenery)])
+		Promise.all([
+			loadDiva($diva as THREE.Object3D),
+			loadScenery($scenery as THREE.Object3D),
+		])
 			.then(([fbx, room]) => {
-				diva.set(fbx);
-
-				scenery.set(room);
+				diva.set(fbx as THREE.Object3D);
+				scenery.set(room as THREE.Object3D);
 			})
 			.catch((err) => {
 				console.error(err);
