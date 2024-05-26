@@ -2,7 +2,7 @@
 	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 	import * as THREE from "three";
-	import ThreeScene from "../../lib/ThreeScene1";
+	import ThreeScene from "../../lib/ThreeScene";
 	import Stats from "three/examples/jsm/libs/stats.module.js";
 	import { invokeCamera } from "../../utils/ropes";
 	import PlayerController from "../../lib/PlayerController";
@@ -10,7 +10,7 @@
 
 	import { derived } from "svelte/store";
 	import animation_queue from "../../store/animationQueueStore";
-	import animation_data from "../../store/animationDataStore";
+	import { animationDictStore } from "../../store/store";
 	import conversation from "../../store/conversationStore";
 	import { diva, shadow, scenery } from "../../store/archetypeStore";
 
@@ -25,8 +25,8 @@
 	let stats;
 
 	// let poseDetector = new PoseDetector();
-	/** @type {PlayerController} */
-	let playerController = undefined;
+
+	// let playerController = undefined;
 
 	let capture_pose = false;
 	let detector_ready = false;
@@ -62,6 +62,9 @@
 			document.documentElement.clientWidth,
 			document.documentElement.clientHeight,
 		);
+		// this is the camera position for mixamo model
+		threeScene.camera.position.set(0, 0, 200);
+
 		// -100 is ground level
 		threeScene.scene.position.set(0, -100, 0);
 
@@ -84,11 +87,11 @@
 	 *
 	 * @param {Array<{x: number, y: number, z: number, visibility: number}>} keypoints3D
 	 */
-	function poseCallback(keypoints3D) {
-		if (playerController) {
-			playerController.applyPose2Bone(keypoints3D, true);
-		}
-	}
+	// function poseCallback(keypoints3D) {
+	// 	if (playerController) {
+	// 		playerController.applyPose2Bone(keypoints3D, true);
+	// 	}
+	// }
 
 	const unsubscribe_shadow = shadow.subscribe((shadow) => {
 		if (!threeScene) {
@@ -107,14 +110,14 @@
 
 		shadow.name = "shadow";
 
-		playerController = new PlayerController(shadow);
+		// playerController = new PlayerController(shadow);
 
 		threeScene.scene.add(shadow);
 	});
 
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
-		[scenery, diva, animation_queue, animation_data],
+		[scenery, diva, animation_queue, animationDictStore],
 		([_scenery, _diva, _animation_queue, _animation_data]) => {
 			return [_scenery, _diva, _animation_queue, _animation_data];
 		},

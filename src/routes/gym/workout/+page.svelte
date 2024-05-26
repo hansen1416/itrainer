@@ -1,5 +1,4 @@
 <script>
-	import _ from "lodash";
 	import { onDestroy, onMount } from "svelte";
 	import WebSocketClient from "../../../lib/WebSocketClient";
 	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";

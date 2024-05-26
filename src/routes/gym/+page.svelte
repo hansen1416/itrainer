@@ -2,12 +2,12 @@
 	import { browser } from "$app/environment";
 	// import _ from "lodash";
 	import { onDestroy, onMount } from "svelte";
-	import WebSocketClient from "../../../lib/WebSocketClient";
-	import Menu from "../../../components/Menu.svelte";
-	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";
+	import WebSocketClient from "../../lib/WebSocketClient";
+	import Menu from "../../components/Menu.svelte";
+	import { loadDiva, loadScenery } from "../../utils/mediaLoader";
 
 	// import { derived } from "svelte/store";
-	import { diva, scenery } from "../../../store/archetypeStore";
+	import { diva, scenery } from "../../store/archetypeStore";
 	// import websocket_state from "../../../store/websocketStore";
 	// import animation_queue from "../../../store/animationQueueStore";
 

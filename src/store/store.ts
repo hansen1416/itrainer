@@ -12,3 +12,7 @@ export const controlType = writable<ControlType>(WebStorage.read("control_type")
 export const currentRotation = writable<THREE.Euler | null>(null);
 
 export const selectedBone = writable<THREE.Object3D | null>(null)
+
+// key, value dictionary, keep all the animation data
+export const animationDictStore = writable({})
+
