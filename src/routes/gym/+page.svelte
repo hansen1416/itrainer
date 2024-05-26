@@ -26,7 +26,7 @@
 		Promise.all([loadDiva($diva), loadScenery($scenery)])
 			.then(([fbx, room]) => {
 				diva.set(fbx);
-				console.log(11111);
+
 				scenery.set(room);
 			})
 			.catch((err) => {

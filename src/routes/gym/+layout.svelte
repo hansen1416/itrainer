@@ -72,7 +72,11 @@
 			stats = new Stats();
 			stats.showPanel(1);
 			document.body.appendChild(stats.dom);
+
+			stats.dom.style.top = "auto";
+			stats.dom.style.bottom = "0";
 		}
+
 		// initialize camera
 		// invokeCamera(video, () => {});
 		// initialize pose detector
