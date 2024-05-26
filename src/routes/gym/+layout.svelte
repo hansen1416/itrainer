@@ -7,7 +7,6 @@
 
 	import ThreeScene from "../../lib/ThreeScene";
 	import { invokeCamera } from "../../utils/ropes";
-	import PlayerController from "../../lib/PlayerController";
 	// import PoseDetector from "../../lib/PoseDetector";
 	import type { AnimationQueueItem } from "../../types/index";
 	import {
