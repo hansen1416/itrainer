@@ -14,7 +14,7 @@
 		diva,
 		scenery,
 		conversation,
-		animation_queue,
+		animationQueueStore,
 	} from "../../store/store";
 
 	let video: HTMLVideoElement;
@@ -86,10 +86,6 @@
 		animate();
 	});
 
-	/**
-	 *
-	 * @param {Array<{x: number, y: number, z: number, visibility: number}>} keypoints3D
-	 */
 	// function poseCallback(keypoints3D) {
 	// 	if (playerController) {
 	// 		playerController.applyPose2Bone(keypoints3D, true);
@@ -98,7 +94,7 @@
 
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
-		[scenery, diva, animation_queue, animationDictStore],
+		[scenery, diva, animationQueueStore, animationDictStore],
 		([_scenery, _diva, _animation_queue, _animationDict]) => {
 			return [_scenery, _diva, _animation_queue, _animationDict];
 		},
@@ -117,21 +113,8 @@
 				return;
 			}
 
-			if (
-				!_diva ||
-				typeof _diva !== "object" ||
-				(_diva as THREE.Object3D).isObject3D !== true
-			) {
-				// diva is not ready, do nothing
-				return;
-			}
-
-			if (
-				!_scenery ||
-				typeof _scenery !== "object" ||
-				(_scenery as THREE.Object3D).isObject3D !== true
-			) {
-				// scenery is not ready, do nothing
+			if (!_diva || !_scenery) {
+				// diva/scenery is not ready, do nothing
 				return;
 			}
 
@@ -144,13 +127,15 @@
 				diva_mixer.addEventListener("finished", () => {
 					// when one animation finished, remove the first animation from queue
 					// this will trigger the watch function on `animation_queue` below
-					animation_queue.update((a_queue: AnimationQueueItem[]) => {
-						if (!a_queue || !a_queue.length) {
-							return [];
-						}
-						// return the rest of the queue but the first one
-						return a_queue.slice(1);
-					});
+					animationQueueStore.update(
+						(a_queue: AnimationQueueItem[]) => {
+							if (!a_queue || !a_queue.length) {
+								return [];
+							}
+							// return the rest of the queue but the first one
+							return a_queue.slice(1);
+						},
+					);
 				});
 
 				threeScene.scene.add(_diva as THREE.Object3D);

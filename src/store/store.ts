@@ -22,6 +22,6 @@ export const scenery = writable<THREE.Object3D | null>(null);
 
 export const conversation = writable<string[] | null>([])
 
-export const animation_queue = writable<AnimationQueueItem[]>([]);
+export const animationQueueStore = writable<AnimationQueueItem[]>([]);
 
 
