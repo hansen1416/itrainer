@@ -1,9 +1,7 @@
-<script>
-	import { browser } from "$app/environment";
-	// import _ from "lodash";
+<script lang="ts">
 	import { onDestroy, onMount } from "svelte";
 	import WebSocketClient from "../../lib/WebSocketClient";
-	import Menu from "../../components/Menu.svelte";
+	// import Menu from "../../components/Menu.svelte";
 	import { loadDiva, loadScenery } from "../../utils/mediaLoader";
 
 	// import { derived } from "svelte/store";

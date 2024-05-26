@@ -1,6 +1,17 @@
-let instance;
+let instance: WebSocketClient;
 
 export default class WebSocketClient {
+
+	socket: WebSocket | null = null;
+
+	onConnect: (readyState: number) => void = () => { };
+
+	onMessage: (event: MessageEvent) => void = () => { };
+
+	onError: (error: Event) => void = () => { };
+
+	onClose: (event: CloseEvent) => void = () => { };
+
 	constructor() {
 
 		// make it a singleton, so we only have 1 threejs scene
@@ -8,16 +19,10 @@ export default class WebSocketClient {
 			return instance;
 		}
 
-		this.socket = null;
-		this.onConnect = () => { };
-		this.onMessage = () => { }; // Define empty default event handlers
-		// this.onError = () => { };
-		// this.onClose = () => { };
-
 		instance = this;
 	}
 
-	connect (url) {
+	connect(url: string) {
 		this.socket = new WebSocket(url);
 
 		// Set the binaryType property to send binary data
@@ -28,12 +33,12 @@ export default class WebSocketClient {
 		// Example: Send a ping every 10 seconds
 		setInterval(() => {
 			const pingData = new ArrayBuffer(0); // Empty payload
-			this.socket.send(pingData);
+			(this.socket as WebSocket).send(pingData);
 		}, 10000);
 
 		this.socket.onopen = () => {
-			console.log("websocket connected, state change to", this.socket.readyState);
-			this.onConnect(this.socket.readyState); // Call user-defined onConnect handler
+			console.log("websocket connected, state change to", (this.socket as WebSocket).readyState);
+			this.onConnect((this.socket as WebSocket).readyState); // Call user-defined onConnect handler
 		};
 
 		this.socket.onmessage = (event) => {
@@ -51,15 +56,15 @@ export default class WebSocketClient {
 		};
 	}
 
-	sendMessage (message) {
-		if (this.socket.readyState === WebSocket.OPEN) {
-			this.socket.send(message);
+	sendMessage(message: string) {
+		if ((this.socket as WebSocket).readyState === WebSocket.OPEN) {
+			(this.socket as WebSocket).send(message);
 		} else {
 			console.error("WebSocket is not open, cannot send message.");
 		}
 	}
 
-	close () {
+	close() {
 		if (this.socket) {
 			this.socket.close();
 			this.socket = null;

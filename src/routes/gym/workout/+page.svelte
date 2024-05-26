@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onDestroy, onMount } from "svelte";
 	import WebSocketClient from "../../../lib/WebSocketClient";
 	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";
