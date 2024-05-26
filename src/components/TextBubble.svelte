@@ -58,11 +58,14 @@
 <style>
 	.text-bubble {
 		position: absolute;
-		top: 30px;
+		bottom: 30px;
 		left: 50%;
 		width: 300px;
 		min-height: 30px;
 		margin-left: -150px;
-		background-color: rgba(255, 255, 255, 0.6);
+		text-align: center;
+		font-size: 16px;
+		font-weight: bold;
+		color: #fff;
 	}
 </style>
