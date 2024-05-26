@@ -1,28 +1,30 @@
-<script>
+<script lang="ts">
 	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 	import * as THREE from "three";
-	import ThreeScene from "../../lib/ThreeScene";
 	import Stats from "three/examples/jsm/libs/stats.module.js";
+	import { derived } from "svelte/store";
+
+	import ThreeScene from "../../lib/ThreeScene";
 	import { invokeCamera } from "../../utils/ropes";
 	import PlayerController from "../../lib/PlayerController";
 	// import PoseDetector from "../../lib/PoseDetector";
+	import type { AnimationQueueItem } from "../../types/index";
+	import {
+		animationDictStore,
+		diva,
+		scenery,
+		conversation,
+		animation_queue,
+	} from "../../store/store";
 
-	import { derived } from "svelte/store";
-	import animation_queue from "../../store/animationQueueStore";
-	import { animationDictStore } from "../../store/store";
-	import conversation from "../../store/conversationStore";
-	import { diva, scenery } from "../../store/archetypeStore";
+	let video: HTMLVideoElement;
 
-	/** @type {HTMLVideoElement} */
-	let video;
-	/** @type {HTMLCanvasElement} */
-	let canvas;
+	let canvas: HTMLCanvasElement;
 
-	/** @type {ThreeScene} */
-	let threeScene;
-	/** @type {Stats} */
-	let stats;
+	let threeScene: ThreeScene;
+
+	let stats: Stats;
 
 	// let poseDetector = new PoseDetector();
 
@@ -33,10 +35,9 @@
 	let show_video = false;
 	let animation_pointer = 0;
 
-	/** @type {THREE.AnimationMixer} */
-	let diva_mixer;
-	/** @type {THREE.AnimationAction} */
-	let diva_action;
+	let diva_mixer: THREE.AnimationMixer;
+
+	let diva_action: THREE.AnimationAction;
 
 	const clock = new THREE.Clock();
 
@@ -100,8 +101,8 @@
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
 		[scenery, diva, animation_queue, animationDictStore],
-		([_scenery, _diva, _animation_queue, _animation_data]) => {
-			return [_scenery, _diva, _animation_queue, _animation_data];
+		([_scenery, _diva, _animation_queue, _animationDict]) => {
+			return [_scenery, _diva, _animation_queue, _animationDict];
 		},
 	);
 
@@ -113,7 +114,7 @@
 	 * if yes, do nothing
 	 */
 	const unsubscribe_queue_data = _derived_queue_data.subscribe(
-		([_scenery, _diva, _animation_queue, _animation_data]) => {
+		([_scenery, _diva, _animation_queue, _animationDict]) => {
 			if (!threeScene) {
 				return;
 			}
@@ -121,7 +122,7 @@
 			if (
 				!_diva ||
 				typeof _diva !== "object" ||
-				_diva.isObject3D !== true
+				(_diva as THREE.Object3D).isObject3D !== true
 			) {
 				// diva is not ready, do nothing
 				return;
@@ -130,7 +131,7 @@
 			if (
 				!_scenery ||
 				typeof _scenery !== "object" ||
-				_scenery.isObject3D !== true
+				(_scenery as THREE.Object3D).isObject3D !== true
 			) {
 				// scenery is not ready, do nothing
 				return;
@@ -138,14 +139,14 @@
 
 			if (!threeScene.scene.getObjectByName("diva")) {
 				// diva is already in the scene, do nothing
-				_diva.name = "diva";
+				(_diva as THREE.Object3D).name = "diva";
 
-				diva_mixer = new THREE.AnimationMixer(_diva);
+				diva_mixer = new THREE.AnimationMixer(_diva as THREE.Object3D);
 
 				diva_mixer.addEventListener("finished", () => {
 					// when one animation finished, remove the first animation from queue
 					// this will trigger the watch function on `animation_queue` below
-					animation_queue.update((a_queue) => {
+					animation_queue.update((a_queue: AnimationQueueItem[]) => {
 						if (!a_queue || !a_queue.length) {
 							return [];
 						}
@@ -154,16 +155,16 @@
 					});
 				});
 
-				threeScene.scene.add(_diva);
+				threeScene.scene.add(_diva as THREE.Object3D);
 
 				console.log("add diva to scene");
 			}
 
 			if (!threeScene.scene.getObjectByName("scenery")) {
 				// scenery is already in the scene, do nothing
-				_scenery.name = "scenery";
+				(_scenery as THREE.Object3D).name = "scenery";
 
-				threeScene.scene.add(_scenery);
+				threeScene.scene.add(_scenery as THREE.Object3D);
 
 				console.log("add scenery to scene");
 			}
@@ -173,8 +174,8 @@
 
 			if (
 				!_animation_queue ||
-				!_animation_data ||
-				_animation_queue.length === 0
+				!_animationDict ||
+				(_animation_queue as []).length === 0
 			) {
 				// animation_queue or animation_data is not ready, do nothing
 				return;
@@ -194,11 +195,17 @@
 				return;
 			}
 
-			const animation_name = _animation_queue[0].name;
-			const animation_repeat = _animation_queue[0].repeat;
-			const animation_text = _animation_queue[0].text;
+			const firstAnimation = (
+				_animation_queue as AnimationQueueItem[]
+			)[0];
 
-			if (!_animation_data[animation_name]) {
+			const animation_name = firstAnimation.name;
+			const animation_repeat = firstAnimation.repeat;
+			const animation_text = firstAnimation.text;
+
+			if (
+				!(_animationDict as { [key: string]: string })[animation_name]
+			) {
 				// animation data is not ready, do nothing
 				return;
 			}
@@ -217,7 +224,9 @@
 			diva_mixer.stopAllAction();
 
 			// play the first animation in queue, the animation_data should be prepared before hand
-			const animation_json = JSON.parse(_animation_data[animation_name]);
+			const animation_json = JSON.parse(
+				(_animationDict as { [key: string]: string })[animation_name],
+			);
 
 			const animation_clip = THREE.AnimationClip.parse(animation_json);
 

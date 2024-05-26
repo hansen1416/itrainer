@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
+	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 	import Typed from "typed.js";
-	import conversation from "../store/conversationStore";
+	import { conversation } from "../store/store";
 
-	let typedInstance;
+	let typedInstance: Typed;
 
 	let show_bubble = false;
 
@@ -28,7 +29,7 @@
 					//   loop: false,
 				});
 
-				console.log('text changed to "' + typedInstance.strings + '"');
+				console.log("text changed to ", value);
 
 				typedInstance.start();
 			} else {
@@ -38,9 +39,11 @@
 	});
 
 	onDestroy(() => {
-		typedInstance.destroy();
+		if (browser) {
+			typedInstance.destroy();
 
-		unsubscribe_conversation();
+			unsubscribe_conversation();
+		}
 	});
 </script>
 

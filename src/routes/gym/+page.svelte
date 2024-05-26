@@ -7,7 +7,7 @@
 	import { loadDiva, loadScenery } from "../../utils/mediaLoader";
 
 	// import { derived } from "svelte/store";
-	import { diva, scenery } from "../../store/archetypeStore";
+	import { diva, scenery } from "../../store/store";
 	// import websocket_state from "../../../store/websocketStore";
 	// import animation_queue from "../../../store/animationQueueStore";
 

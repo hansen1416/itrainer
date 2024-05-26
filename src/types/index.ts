@@ -23,3 +23,5 @@ export type ControlType = "rotation" | "translation" | "";
 export type ApplyMethod = "linear" | "slerp";
 
 export type WorldPoseLandmarks = { x: number, y: number, z: number, visibility: number }[];
+
+export type AnimationQueueItem = { "name": string, "repeat": number, "text": string };
