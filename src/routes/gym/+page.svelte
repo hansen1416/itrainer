@@ -3,13 +3,14 @@
 	import { derived } from "svelte/store";
 	import * as THREE from "three";
 
-	import WebSocketClient from "../../lib/WebSocketClient";
 	// import Menu from "../../components/Menu.svelte";
-	import { loadDiva, loadScenery } from "../../utils/ropes";
+	import WebSocketClient from "../../lib/WebSocketClient";
+	import { loadDiva, loadScenery, loadJSON } from "../../utils/ropes";
 	import {
 		diva,
 		scenery,
 		animationQueueStore,
+		animationDictStore,
 		websocketStateStore,
 	} from "../../store/store";
 
@@ -28,57 +29,71 @@
 		Promise.all([
 			loadDiva($diva as THREE.Object3D),
 			loadScenery($scenery as THREE.Object3D),
+			loadJSON("json/waving.json"),
 		])
-			.then(([fbx, room]) => {
+			.then(([fbx, room, waving]) => {
 				diva.set(fbx as THREE.Object3D);
 				scenery.set(room as THREE.Object3D);
+
+				animationDictStore.set({
+					waving: JSON.stringify(waving),
+				});
+
+				animationQueueStore.set([
+					{
+						name: "greeting",
+						repeat: 1,
+						// data: waving,
+						text: "Hi, I am Diva, nice to meet you!",
+					},
+				]);
 			})
 			.catch((err) => {
 				console.error(err);
 			});
 	});
 
-	let _derived_store = derived(
-		[diva, websocketStateStore],
-		([_diva, _websocket_state]) => {
-			return [_diva, _websocket_state];
-		},
-	);
+	// let _derived_store = derived(
+	// 	[diva, websocketStateStore],
+	// 	([_diva, _websocket_state]) => {
+	// 		return [_diva, _websocket_state];
+	// 	},
+	// );
 
-	const unsubscribe_derived_store = _derived_store.subscribe(
-		([_diva, _websocket_state]) => {
-			// when websocket is connected, and diva is loaded
-			// request the animation data needed in this component from redis
-			// make only send request once
+	// const unsubscribe_derived_store = _derived_store.subscribe(
+	// 	([_diva, _websocket_state]) => {
+	// 		// when websocket is connected, and diva is loaded
+	// 		// request the animation data needed in this component from redis
+	// 		// make only send request once
 
-			if (
-				!_diva ||
-				typeof _diva !== "object" ||
-				_diva.isObject3D !== true
-			) {
-				// diva is not ready, do nothing
-				return;
-			}
+	// 		if (
+	// 			!_diva ||
+	// 			typeof _diva !== "object" ||
+	// 			_diva.isObject3D !== true
+	// 		) {
+	// 			// diva is not ready, do nothing
+	// 			return;
+	// 		}
 
-			if (_websocket_state !== WebSocket.OPEN) {
-				// websocket is not ready, do nothing
-				return;
-			}
+	// 		if (_websocket_state !== WebSocket.OPEN) {
+	// 			// websocket is not ready, do nothing
+	// 			return;
+	// 		}
 
-			if (animation_request_sent) {
-				return;
-			}
+	// 		if (animation_request_sent) {
+	// 			return;
+	// 		}
 
-			const msg = "amq:greeting";
+	// 		const msg = "amq:greeting";
 
-			// when websocket is connected, request the animation data needed in this component
-			wsClient.sendMessage(msg);
+	// 		// when websocket is connected, request the animation data needed in this component
+	// 		wsClient.sendMessage(msg);
 
-			console.log("request animation data from redis msg: " + msg);
+	// 		console.log("request animation data from redis msg: " + msg);
 
-			animation_request_sent = true;
-		},
-	);
+	// 		animation_request_sent = true;
+	// 	},
+	// );
 
 	const unsubscribe_animation_queue = animationQueueStore.subscribe(
 		(a_queue) => {
@@ -95,7 +110,7 @@
 
 	onDestroy(() => {
 		// // unsubscribe all stores
-		unsubscribe_derived_store();
+		// unsubscribe_derived_store();
 		unsubscribe_animation_queue();
 	});
 </script>
