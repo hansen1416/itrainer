@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 
 	import WebSocketClient from "../lib/WebSocketClient";
@@ -10,8 +11,10 @@
 	} from "../store/store";
 	import "./app.scss";
 
+	let socket: WebSocketClient;
+
 	onMount(() => {
-		let socket = new WebSocketClient();
+		socket = new WebSocketClient();
 		// When you write $websocket, you're essentially saying, "Get the current value from the store named websocket."
 
 		// websocket.set(socket); // Assign the instance to the store
@@ -71,6 +74,12 @@
 				console.log("received unknown message", msg);
 			}
 		};
+	});
+
+	onDestroy(() => {
+		if (browser) {
+			socket.close();
+		}
 	});
 </script>
 
