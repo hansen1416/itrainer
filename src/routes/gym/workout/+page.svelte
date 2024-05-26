@@ -4,7 +4,7 @@
 	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";
 
 	import { derived } from "svelte/store";
-	import { diva, scenery, animation_queue } from "../../../store/store";
+	import { diva, scenery, animationQueueStore } from "../../../store/store";
 	import websocket_state from "../../../store/websocketStore";
 
 	export let id;
@@ -71,15 +71,17 @@
 		},
 	);
 
-	const unsubscribe_animation_queue = animation_queue.subscribe((a_queue) => {
-		if (a_queue.length === 0) {
-			if (animation_played) {
-				// do something when animation queue is finished
+	const unsubscribe_animation_queue = animationQueueStore.subscribe(
+		(a_queue) => {
+			if (a_queue.length === 0) {
+				if (animation_played) {
+					// do something when animation queue is finished
+				}
+			} else {
+				animation_played = true;
 			}
-		} else {
-			animation_played = true;
-		}
-	});
+		},
+	);
 
 	onDestroy(() => {
 		unsubscribe_derived_diva_ws();

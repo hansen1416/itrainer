@@ -95,8 +95,8 @@
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
 		[scenery, diva, animationQueueStore, animationDictStore],
-		([_scenery, _diva, _animation_queue, _animationDict]) => {
-			return [_scenery, _diva, _animation_queue, _animationDict];
+		([_scenery, _diva, _animationQueue, _animationDict]) => {
+			return [_scenery, _diva, _animationQueue, _animationDict];
 		},
 	);
 
@@ -108,7 +108,7 @@
 	 * if yes, do nothing
 	 */
 	const unsubscribe_queue_data = _derived_queue_data.subscribe(
-		([_scenery, _diva, _animation_queue, _animationDict]) => {
+		([_scenery, _diva, _animationQueue, _animationDict]) => {
 			if (!threeScene) {
 				return;
 			}
@@ -156,9 +156,9 @@
 			// we can start to play the animation
 
 			if (
-				!_animation_queue ||
+				!_animationQueue ||
 				!_animationDict ||
-				(_animation_queue as []).length === 0
+				(_animationQueue as []).length === 0
 			) {
 				// animation_queue or animation_data is not ready, do nothing
 				return;
@@ -178,9 +178,7 @@
 				return;
 			}
 
-			const firstAnimation = (
-				_animation_queue as AnimationQueueItem[]
-			)[0];
+			const firstAnimation = (_animationQueue as AnimationQueueItem[])[0];
 
 			const animation_name = firstAnimation.name;
 			const animation_repeat = firstAnimation.repeat;
