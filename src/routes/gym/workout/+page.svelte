@@ -51,6 +51,11 @@
 				return;
 			}
 
+			if (!id) {
+				console.error("id is not provided");
+				return;
+			}
+
 			const msg = "amq:" + id;
 
 			// when websocket is connected, request the animation sequence data needed in this component
