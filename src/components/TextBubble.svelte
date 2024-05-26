@@ -60,9 +60,9 @@
 		position: absolute;
 		bottom: 30px;
 		left: 50%;
-		width: 300px;
+		width: 400px;
 		min-height: 30px;
-		margin-left: -150px;
+		margin-left: -200px;
 		text-align: center;
 		font-size: 16px;
 		font-weight: bold;

@@ -244,9 +244,13 @@ export function loadDiva(_diva: THREE.Object3D) {
     }
 
     return new Promise((resolve, reject) => {
-        loadFBX("/fbx/taunt.fbx")
-            .then((fbx) => {
-                resolve(fbx);
+        loadGLTF("/glb/dors.glb")
+            .then((dors) => {
+                const anya = dors.scene;
+
+                anya.position.set(0, 0.04, 0);
+
+                resolve(anya);
             })
             .catch((err) => {
                 reject(err);
@@ -268,9 +272,9 @@ export function loadScenery(_scenery: THREE.Object3D) {
             .then((glb) => {
                 const room = glb.scene;
                 // scale room up by 20
-                room.scale.set(40, 40, 40);
+                // room.scale.set(0.5, 0.5, 0.5);
                 // set room position to 10, 0, 0
-                room.position.set(0, 0, -500);
+                room.position.set(0, 0, -4);
                 // rotate room 90 degree along z axis
                 room.rotation.set(0, Math.PI / -2, 0);
 

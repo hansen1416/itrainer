@@ -6,7 +6,7 @@
 	import { derived } from "svelte/store";
 
 	import ThreeScene from "../../lib/ThreeScene";
-	import { invokeCamera } from "../../utils/ropes";
+	import { loadDiva, loadScenery, invokeCamera } from "../../utils/ropes";
 	// import PoseDetector from "../../lib/PoseDetector";
 	import type { AnimationQueueItem } from "../../types/index";
 	import {
@@ -62,11 +62,11 @@
 			canvas,
 			document.documentElement.clientWidth,
 			document.documentElement.clientHeight,
-			new THREE.Vector3(0, 0, 200), // this is the camera position for mixamo model
+			new THREE.Vector3(0, 0.6, 2), // this is the camera position for mixamo model
 		);
 
 		// -100 is ground level
-		threeScene.scene.position.set(0, -100, 0);
+		threeScene.scene.position.set(0, -1, 0);
 
 		if (import.meta.env.DEV) {
 			stats = new Stats();
@@ -76,6 +76,19 @@
 			stats.dom.style.top = "auto";
 			stats.dom.style.bottom = "0";
 		}
+
+		Promise.all([
+			loadDiva($diva as THREE.Object3D),
+			loadScenery($scenery as THREE.Object3D),
+		])
+			.then(([fbx, room]) => {
+				diva.set(fbx as THREE.Object3D);
+
+				scenery.set(room as THREE.Object3D);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 
 		// initialize camera
 		// invokeCamera(video, () => {});

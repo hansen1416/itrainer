@@ -1,13 +1,10 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
-	import * as THREE from "three";
 
 	import WebSocketClient from "../../../lib/WebSocketClient";
-	import { loadDiva, loadScenery } from "../../../utils/ropes";
 	import { derived } from "svelte/store";
 	import {
 		diva,
-		scenery,
 		animationQueueStore,
 		websocketStateStore,
 	} from "../../../store/store";
@@ -21,20 +18,7 @@
 	// make sure menu only show when animation played, not when page first loaded
 	let animation_played = false;
 
-	onMount(() => {
-		Promise.all([
-			loadDiva($diva as THREE.Object3D),
-			loadScenery($scenery as THREE.Object3D),
-		])
-			.then(([fbx, room]) => {
-				diva.set(fbx as THREE.Object3D);
-
-				scenery.set(room as THREE.Object3D);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	});
+	onMount(() => {});
 
 	const _derived_diva_ws = derived(
 		[diva, websocketStateStore],
