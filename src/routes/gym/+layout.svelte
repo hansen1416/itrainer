@@ -12,7 +12,7 @@
 	import animation_queue from "../../store/animationQueueStore";
 	import { animationDictStore } from "../../store/store";
 	import conversation from "../../store/conversationStore";
-	import { diva, shadow, scenery } from "../../store/archetypeStore";
+	import { diva, scenery } from "../../store/archetypeStore";
 
 	/** @type {HTMLVideoElement} */
 	let video;
@@ -96,28 +96,6 @@
 	// 		playerController.applyPose2Bone(keypoints3D, true);
 	// 	}
 	// }
-
-	const unsubscribe_shadow = shadow.subscribe((shadow) => {
-		if (!threeScene) {
-			return;
-		}
-
-		if (typeof shadow !== "object" || shadow.isObject3D !== true) {
-			// shadow is not ready, do nothing
-			return;
-		}
-
-		if (threeScene.scene.getObjectByName("shadow")) {
-			// shadow is already in the scene, do nothing
-			return;
-		}
-
-		shadow.name = "shadow";
-
-		// playerController = new PlayerController(shadow);
-
-		threeScene.scene.add(shadow);
-	});
 
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
@@ -280,7 +258,6 @@
 		}
 
 		// unsubscribe all stores
-		unsubscribe_shadow();
 		unsubscribe_queue_data();
 	});
 </script>

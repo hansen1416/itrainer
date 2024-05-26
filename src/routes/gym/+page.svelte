@@ -22,7 +22,7 @@
 
 	onMount(() => {
 		// wsClient = $websocket;
-		// we need store to keep diva and shadow
+		// we need store to keep diva and scenery
 		Promise.all([loadDiva($diva), loadScenery($scenery)])
 			.then(([fbx, room]) => {
 				diva.set(fbx);
