@@ -62,9 +62,8 @@
 			canvas,
 			document.documentElement.clientWidth,
 			document.documentElement.clientHeight,
+			new THREE.Vector3(0, 0, 200), // this is the camera position for mixamo model
 		);
-		// this is the camera position for mixamo model
-		threeScene.camera.position.set(0, 0, 200);
 
 		// -100 is ground level
 		threeScene.scene.position.set(0, -100, 0);
@@ -334,5 +333,14 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
+	}
+
+	.controls {
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		padding: 10px;
+		display: flex;
+		justify-content: space-between;
 	}
 </style>

@@ -3,11 +3,6 @@ import { OrbitControls } from '@three-ts/orbit-controls';
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
 
-const CAMERA_DISTANCE = 2;
-
-const CameraOffset = new THREE.Vector3(0, 0.6, CAMERA_DISTANCE);
-
-
 /**
  * @class ThreeScene
  * @description
@@ -40,8 +35,7 @@ export default class ThreeScene {
      * @param width 
      * @param height 
      */
-    constructor(canvas: HTMLCanvasElement, width: number, height: number) {
-
+    constructor(canvas: HTMLCanvasElement, width: number, height: number, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)) {
 
         this.scene = new THREE.Scene();
 
@@ -56,11 +50,7 @@ export default class ThreeScene {
             4000
         );
         // camera initial position
-        this.camera.position.set(
-            CameraOffset.x,
-            CameraOffset.y,
-            CameraOffset.z
-        );
+        this.camera.position.copy(initialCameraPosition);
 
         this.camera.updateProjectionMatrix(); // update the camera's projection matrix
 
