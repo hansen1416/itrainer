@@ -20,7 +20,7 @@ export const diva = writable<THREE.Object3D | null>(null);
 
 export const scenery = writable<THREE.Object3D | null>(null);
 
-export const conversation = writable<string[] | null>([])
+export const conversationStore = writable<string[] | null>([])
 
 export const animationQueueStore = writable<AnimationQueueItem[]>([]);
 

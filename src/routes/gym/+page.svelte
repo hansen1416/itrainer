@@ -11,7 +11,7 @@
 		scenery,
 		animationQueueStore,
 		animationDictStore,
-		websocketStateStore,
+		conversationStore,
 	} from "../../store/store";
 
 	// websocket client
@@ -41,9 +41,8 @@
 
 				animationQueueStore.set([
 					{
-						name: "greeting",
+						name: "waving",
 						repeat: 1,
-						// data: waving,
 						text: "Hi, I am Diva, nice to meet you!",
 					},
 				]);
@@ -101,6 +100,8 @@
 				if (animation_played) {
 					// when there is animation palyed, and the queue empty render menu component
 					show_menu = true;
+
+					conversationStore.set(null);
 				}
 			} else {
 				animation_played = true;

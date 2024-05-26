@@ -2,7 +2,7 @@
 	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 	import Typed from "typed.js";
-	import { conversation } from "../store/store";
+	import { conversationStore } from "../store/store";
 
 	let typedInstance: Typed;
 
@@ -16,33 +16,35 @@
 		});
 	});
 
-	const unsubscribe_conversation = conversation.subscribe((value) => {
-		if (typedInstance) {
-			typedInstance.destroy();
+	const unsubscribeConversationStore = conversationStore.subscribe(
+		(value) => {
+			if (typedInstance) {
+				typedInstance.destroy();
 
-			if (value && value instanceof Array) {
-				show_bubble = true;
+				if (value && value instanceof Array) {
+					show_bubble = true;
 
-				typedInstance = new Typed("#text_bubble", {
-					strings: value,
-					//   typeSpeed: 50,
-					//   loop: false,
-				});
+					typedInstance = new Typed("#text_bubble", {
+						strings: value,
+						//   typeSpeed: 50,
+						//   loop: false,
+					});
 
-				console.log("text changed to ", value);
+					console.log("text changed to ", value);
 
-				typedInstance.start();
-			} else {
-				show_bubble = false;
+					typedInstance.start();
+				} else {
+					show_bubble = false;
+				}
 			}
-		}
-	});
+		},
+	);
 
 	onDestroy(() => {
 		if (browser) {
 			typedInstance.destroy();
 
-			unsubscribe_conversation();
+			unsubscribeConversationStore();
 		}
 	});
 </script>

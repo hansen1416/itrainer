@@ -13,9 +13,10 @@
 		animationDictStore,
 		diva,
 		scenery,
-		conversation,
+		conversationStore,
 		animationQueueStore,
 	} from "../../store/store";
+	import TextBubble from "../../components/TextBubble.svelte";
 
 	let video: HTMLVideoElement;
 
@@ -193,9 +194,9 @@
 
 			// check is current animation item has a `message` field, if yes, render TextBubble component
 			if (animation_text) {
-				conversation.set([animation_text]);
+				conversationStore.set([animation_text]);
 			} else {
-				conversation.set(null);
+				conversationStore.set(null);
 			}
 
 			console.log(
@@ -305,6 +306,8 @@
 </section>
 
 <slot></slot>
+
+<TextBubble />
 
 <style>
 	canvas {
