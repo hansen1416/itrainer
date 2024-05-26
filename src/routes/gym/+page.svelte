@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
+	import { derived } from "svelte/store";
+
 	import WebSocketClient from "../../lib/WebSocketClient";
 	// import Menu from "../../components/Menu.svelte";
 	import { loadDiva, loadScenery } from "../../utils/mediaLoader";
-
-	// import { derived } from "svelte/store";
-	import { diva, scenery } from "../../store/store";
-	// import websocket_state from "../../../store/websocketStore";
-	// import animation_queue from "../../../store/animationQueueStore";
+	import {
+		diva,
+		scenery,
+		animationQueueStore,
+		websocketStateStore,
+	} from "../../store/store";
 
 	// websocket client
 	let wsClient = new WebSocketClient();
@@ -32,63 +35,65 @@
 			});
 	});
 
-	// let _derived_store = derived(
-	// 	[diva, websocket_state],
-	// 	([_diva, _websocket_state]) => {
-	// 		return [_diva, _websocket_state];
-	// 	},
-	// );
+	let _derived_store = derived(
+		[diva, websocketStateStore],
+		([_diva, _websocket_state]) => {
+			return [_diva, _websocket_state];
+		},
+	);
 
-	// const unsubscribe_derived_store = _derived_store.subscribe(
-	// 	([_diva, _websocket_state]) => {
-	// 		// when websocket is connected, and diva is loaded
-	// 		// request the animation data needed in this component from redis
-	// 		// make only send request once
+	const unsubscribe_derived_store = _derived_store.subscribe(
+		([_diva, _websocket_state]) => {
+			// when websocket is connected, and diva is loaded
+			// request the animation data needed in this component from redis
+			// make only send request once
 
-	// 		if (
-	// 			!_diva ||
-	// 			typeof _diva !== "object" ||
-	// 			_diva.isObject3D !== true
-	// 		) {
-	// 			// diva is not ready, do nothing
-	// 			return;
-	// 		}
+			if (
+				!_diva ||
+				typeof _diva !== "object" ||
+				_diva.isObject3D !== true
+			) {
+				// diva is not ready, do nothing
+				return;
+			}
 
-	// 		if (_websocket_state !== WebSocket.OPEN) {
-	// 			// websocket is not ready, do nothing
-	// 			return;
-	// 		}
+			if (_websocket_state !== WebSocket.OPEN) {
+				// websocket is not ready, do nothing
+				return;
+			}
 
-	// 		if (animation_request_sent) {
-	// 			return;
-	// 		}
+			if (animation_request_sent) {
+				return;
+			}
 
-	// 		const msg = "amq:greeting";
+			const msg = "amq:greeting";
 
-	// 		// when websocket is connected, request the animation data needed in this component
-	// 		wsClient.sendMessage(msg);
+			// when websocket is connected, request the animation data needed in this component
+			wsClient.sendMessage(msg);
 
-	// 		console.log("request animation data from redis msg: " + msg);
+			console.log("request animation data from redis msg: " + msg);
 
-	// 		animation_request_sent = true;
-	// 	},
-	// );
+			animation_request_sent = true;
+		},
+	);
 
-	// const unsubscribe_animation_queue = animation_queue.subscribe((a_queue) => {
-	// 	if (a_queue.length === 0) {
-	// 		if (animation_played) {
-	// 			// when there is animation palyed, and the queue empty render menu component
-	// 			show_menu = true;
-	// 		}
-	// 	} else {
-	// 		animation_played = true;
-	// 	}
-	// });
+	const unsubscribe_animation_queue = animationQueueStore.subscribe(
+		(a_queue) => {
+			if (a_queue.length === 0) {
+				if (animation_played) {
+					// when there is animation palyed, and the queue empty render menu component
+					show_menu = true;
+				}
+			} else {
+				animation_played = true;
+			}
+		},
+	);
 
 	onDestroy(() => {
 		// // unsubscribe all stores
-		// unsubscribe_derived_store();
-		// unsubscribe_animation_queue();
+		unsubscribe_derived_store();
+		unsubscribe_animation_queue();
 	});
 </script>
 

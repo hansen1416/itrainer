@@ -24,4 +24,6 @@ export const conversation = writable<string[] | null>([])
 
 export const animationQueueStore = writable<AnimationQueueItem[]>([]);
 
+export const websocketStateStore = writable<number>(0);
+
 

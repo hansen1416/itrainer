@@ -36,7 +36,7 @@
 	const menu_request = getMenu();
 
 	async function getMenu() {
-		return null;
+		return [];
 		// try {
 		// 	const response = await axios.get("http://localhost:3333/menu");
 

@@ -4,8 +4,12 @@
 	import { loadDiva, loadScenery } from "../../../utils/mediaLoader";
 
 	import { derived } from "svelte/store";
-	import { diva, scenery, animationQueueStore } from "../../../store/store";
-	import websocket_state from "../../../store/websocketStore";
+	import {
+		diva,
+		scenery,
+		animationQueueStore,
+		websocketStateStore,
+	} from "../../../store/store";
 
 	export let id;
 
@@ -29,7 +33,7 @@
 	});
 
 	const _derived_diva_ws = derived(
-		[diva, websocket_state],
+		[diva, websocketStateStore],
 		([_diva, _websocket_state]) => {
 			return [_diva, _websocket_state];
 		},
