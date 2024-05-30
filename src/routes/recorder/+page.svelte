@@ -10,6 +10,7 @@
 	import ThreeScene from "../../lib/ThreeScene";
 	import JointsPosition2Rotation from "../../lib/JointsPosition2Rotation";
 	import AnimationData from "../../lib/AnimationData";
+	import ApiRequest from "../../lib/ApiRequest";
 	import { loadGLTF, rotateBones } from "../../utils/ropes";
 
 	let rightHandBlock: HTMLDivElement;
@@ -191,10 +192,9 @@
 					on:click={() => {
 						const data = animationData.exportData();
 
-						localStorage.setItem(
-							"animation_data",
-							JSON.stringify(data, null, 2),
-						);
+						ApiRequest.saveAnimationData(data).then((res) => {
+							console.log(res, "saved");
+						});
 					}}>Save to mine</button
 				>
 				<button

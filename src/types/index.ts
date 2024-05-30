@@ -16,6 +16,8 @@ export type AnimationDataObject = { [key: string]: QuaternionArray[] };
 
 export type AnimationFrameDataObject = { [key: string]: QuaternionArray }
 
+export type AnimationJson = { data: AnimationDataObject, keyframes: { [key: string]: number[] } }
+
 export type DiaplayScene = "mesh" | "skeleton";
 
 export type ControlType = "rotation" | "translation" | "";

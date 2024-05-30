@@ -39,4 +39,22 @@ export default class WebStorage {
             return data;
         }
     }
+
+    static getItemsByPrefix(prefix: string) {
+
+        if (!WebStorage.storage) {
+            return null;
+        }
+
+        const items: { [key: string]: string } = {};
+        const keys = Object.keys(WebStorage.storage);
+
+        keys.forEach(key => {
+            if (key.startsWith(prefix)) {
+                items[key] = WebStorage.read(key);
+            }
+        });
+
+        return items;
+    }
 }

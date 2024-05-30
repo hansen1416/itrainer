@@ -10,8 +10,12 @@
 		websocketStateStore,
 	} from "../store/store";
 	import "./app.scss";
+	import WebStorage from "../lib/WebStorage";
+	import Dropdown from "../components/Dropdown.svelte";
 
 	let socket: WebSocketClient;
+
+	let myAnimations: string[] = [];
 
 	onMount(() => {
 		socket = new WebSocketClient();
@@ -74,6 +78,12 @@
 				console.log("received unknown message", msg);
 			}
 		};
+
+		const savedAnimations = WebStorage.getItemsByPrefix("anim:");
+
+		if (savedAnimations && Object.keys(savedAnimations).length > 0) {
+			myAnimations = Object.keys(savedAnimations);
+		}
 	});
 
 	onDestroy(() => {
@@ -96,6 +106,7 @@
 	<a href="/gym">Gym</a>
 	<a href="/editor">Editor</a>
 	<a href="/recorder">Recorder</a>
+	<Dropdown title="My Animations" contentList={myAnimations} />
 </div>
 
 <style lang="scss">

@@ -10,6 +10,16 @@ import * as THREE from "three";
 
 import type { QuaternionArray } from "../types";
 
+export function randomString(length: number): string {
+    const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+    let randomstring = "";
+    for (let i = 0; i < length; i++) {
+        const rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars.substring(rnum, rnum + 1);
+    }
+    return randomstring;
+}
+
 export function loadBVH(url: string): Promise<BVH> {
     return new Promise((resolve) => {
         const loader = new BVHLoader();

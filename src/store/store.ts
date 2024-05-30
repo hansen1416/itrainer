@@ -26,4 +26,4 @@ export const animationQueueStore = writable<AnimationQueueItem[]>([]);
 
 export const websocketStateStore = writable<number>(0);
 
-
+export const selectedAnimationKeyStore = writable<string | null>(null);

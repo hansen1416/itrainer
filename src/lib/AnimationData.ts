@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import type { QuaternionArray, AnimationDataObject, AnimationFrameDataObject, ApplyMethod } from "../types";
+import type { QuaternionArray, AnimationDataObject, AnimationFrameDataObject, AnimationJson, ApplyMethod } from "../types";
 import { insertIntoSortedArray } from "../utils/ropes";
 
 /**
@@ -243,7 +243,7 @@ export default class AnimationData {
         }
     }
 
-    exportData(): { data: AnimationDataObject, keyframes: { [key: string]: number[] } } {
+    exportData(): AnimationJson {
         return {
             data: this.data,
             keyframes: this.keyframes
