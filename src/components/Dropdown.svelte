@@ -10,13 +10,13 @@
 	// When the user clicks on the button,
 	// toggle between hiding and showing the dropdown content
 	function toggleShow() {
-		listElement.classList.toggle("show");
+		listElement.classList.toggle("hide");
 	}
 </script>
 
 <div class="dropdown">
 	<button on:click={toggleShow} class="dropbtn">{title}</button>
-	<div bind:this={listElement} class="dropdown-content">
+	<div bind:this={listElement} class="dropdown-content hide">
 		{#each contentList as content}
 			<button
 				on:click={() => {
@@ -30,53 +30,48 @@
 </div>
 
 <style lang="scss">
-	/* Dropdown Button */
+	$nav-height: 40px;
+
 	.dropbtn {
-		background-color: #3498db;
 		color: white;
-		padding: 16px;
-		font-size: 16px;
+		height: $nav-height;
+		line-height: $nav-height;
+		font-size: 18px;
+		font-weight: bold;
 		border: none;
 		cursor: pointer;
-	}
-
-	/* Dropdown button on hover & focus */
-	.dropbtn:hover,
-	.dropbtn:focus {
-		background-color: #2980b9;
 	}
 
 	/* The container <div> - needed to position the dropdown content */
 	.dropdown {
 		position: relative;
 		display: inline-block;
+		margin-left: 24px;
 	}
 
 	/* Dropdown Content (Hidden by Default) */
 	.dropdown-content {
-		display: none;
+		display: block;
 		position: absolute;
 		background-color: #f1f1f1;
 		min-width: 160px;
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 		z-index: 1;
-	}
+		min-height: 30px;
 
-	/* Links inside the dropdown */
-	.dropdown-content .content {
-		color: black;
-		padding: 12px 16px;
-		text-decoration: none;
-		display: block;
-	}
+		&.hide {
+			display: none;
+		}
 
-	/* Change color of dropdown links on hover */
-	.dropdown-content .content:hover {
-		background-color: #ddd;
-	}
+		.content {
+			color: black;
+			padding: 12px 16px;
+			text-decoration: none;
+			display: block;
 
-	/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-	.show {
-		display: block;
+			&:hover {
+				background-color: #ddd;
+			}
+		}
 	}
 </style>

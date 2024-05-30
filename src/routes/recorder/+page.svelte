@@ -164,13 +164,13 @@
 
 <section>
 	<div class="left-hand">
-		<div class="input-box">
-			<input type="file" accept="video/*" on:change={uploadVideo} />
-		</div>
 		<div class="video-box">
 			<video controls={false} bind:this={video}>
 				<track kind="captions" srclang="en" label="English" default />
 			</video>
+		</div>
+		<div class="input-box">
+			<input type="file" accept="video/*" on:change={uploadVideo} />
 		</div>
 		<div class="extract">
 			<button
@@ -247,7 +247,7 @@
 	.input-box {
 		margin: 10px 0;
 		position: absolute;
-		top: 0;
+		bottom: 0;
 	}
 
 	.video-box {
