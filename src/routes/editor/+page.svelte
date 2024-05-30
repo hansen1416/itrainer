@@ -9,11 +9,7 @@
 	import Panel from "../../components/Panel.svelte";
 	import ThreeScene from "../../lib/ThreeScene";
 	import AnimationData from "../../lib/AnimationData";
-	import type {
-		AnimationDataObject,
-		ApplyMethod,
-		ControlType,
-	} from "../../types/index";
+	import type { ApplyMethod, ControlType } from "../../types/index";
 	import Skeleton from "../../lib/Skeleton";
 	import { RotationControl, TranslationControl } from "../../lib/Controls";
 	import {
@@ -21,14 +17,15 @@
 		controlType,
 		currentRotation,
 		selectedBone,
+		selectedAnimationKeyStore,
 	} from "../../store/store";
 	import {
 		loadGLTF,
-		loadJSON,
 		getNamedIntersects,
 		setMeshOpacity,
 		getMousePosition,
 	} from "../../utils/ropes";
+	import ApiRequest from "../../lib/ApiRequest";
 
 	const BoneNames = [
 		"Hips",
@@ -100,6 +97,7 @@
 
 	let displaySceneUnscribe: Function;
 	let controlTypeUnscribe: Function;
+	let selectedAnimationKeyUnsubscribe: Function;
 
 	function animate() {
 		if (threeScene) {
@@ -127,10 +125,7 @@
 			document.documentElement.clientHeight,
 		);
 
-		Promise.all([
-			loadGLTF(`/glb/dors.glb`),
-			loadJSON(`/anim-calculated-quaternion/my_animation.json`),
-		]).then(([gltf, anim_data]) => {
+		Promise.all([loadGLTF(`/glb/dors.glb`)]).then(([gltf]) => {
 			diva = gltf.scene.children[0];
 
 			diva.name = "diva";
@@ -164,21 +159,6 @@
 			threeScene.scene.add(rotationControl.group);
 			threeScene.scene.add(translationControl.group);
 
-			// initial animation data begin
-			animtionData.loadData(
-				(anim_data as any).data as AnimationDataObject,
-				bones,
-			);
-
-			animtionData.loadKeyFrames(
-				(anim_data as any).keyframes as { [key: string]: number[] },
-			);
-
-			total_frames = animtionData.total_frames;
-
-			// initial frame
-			animtionData.applyRotation(initial_frame);
-
 			skeleton.setBones(bones);
 
 			skeleton.updateBonePositions();
@@ -204,6 +184,28 @@
 				}
 			});
 
+			selectedAnimationKeyUnsubscribe =
+				selectedAnimationKeyStore.subscribe((key) => {
+					if (!key) {
+						return;
+					}
+
+					// load animation data from server
+					ApiRequest.getAnimationData(key as string).then(
+						(anim_data) => {
+							// initial animation data begin
+							animtionData.loadData(anim_data.data, bones);
+
+							animtionData.loadKeyFrames(anim_data.keyframes);
+
+							total_frames = animtionData.total_frames;
+
+							// initial frame
+							animtionData.applyRotation(initial_frame);
+						},
+					);
+				});
+
 			allDone = true;
 		});
 	});
@@ -217,6 +219,10 @@
 
 			if (controlTypeUnscribe) {
 				controlTypeUnscribe();
+			}
+
+			if (selectedAnimationKeyUnsubscribe) {
+				selectedAnimationKeyUnsubscribe();
 			}
 
 			cancelAnimationFrame(animation_pointer);
@@ -440,10 +446,10 @@
 	}
 
 	function saveAnimation() {
-		// save the json data to localstorage
-		const data = animtionData.exportData();
-
-		localStorage.setItem("animation_data", JSON.stringify(data, null, 2));
+		// save animation data to user account
+		ApiRequest.saveAnimationData(animtionData.exportData()).then((res) => {
+			console.log(res, "saved");
+		});
 	}
 </script>
 
@@ -503,8 +509,10 @@
 
 	.actions {
 		position: absolute;
-		top: 16px;
+		bottom: 300px;
 		right: 16px;
+		display: flex;
+		flex-direction: column;
 
 		button {
 			font-size: 16px;

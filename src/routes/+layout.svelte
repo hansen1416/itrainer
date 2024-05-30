@@ -2,6 +2,7 @@
 	import { browser } from "$app/environment";
 	import { onDestroy, onMount } from "svelte";
 
+	import "./app.scss";
 	import WebSocketClient from "../lib/WebSocketClient";
 	import type { AnimationQueueItem } from "../types/index";
 	import {
@@ -9,8 +10,7 @@
 		animationQueueStore,
 		websocketStateStore,
 	} from "../store/store";
-	import "./app.scss";
-	import WebStorage from "../lib/WebStorage";
+	import ApiRequest from "../lib/ApiRequest";
 	import Dropdown from "../components/Dropdown.svelte";
 
 	let socket: WebSocketClient;
@@ -79,11 +79,9 @@
 			}
 		};
 
-		const savedAnimations = WebStorage.getItemsByPrefix("anim:");
-
-		if (savedAnimations && Object.keys(savedAnimations).length > 0) {
-			myAnimations = Object.keys(savedAnimations);
-		}
+		ApiRequest.getAnimationList().then((res) => {
+			myAnimations = res.data;
+		});
 	});
 
 	onDestroy(() => {

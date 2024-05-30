@@ -238,48 +238,48 @@
 		justify-content: center;
 		align-items: center;
 		left: 0;
+
+		.input-box {
+			margin: 10px 0;
+			position: absolute;
+			bottom: 0;
+		}
+
+		.video-box {
+			max-width: 80%;
+			max-height: 80%;
+		}
+
+		video {
+			max-width: 100%;
+			max-height: 100%;
+		}
+
+		.extract {
+			position: absolute;
+			top: 50%;
+			right: -48px;
+			width: 96px;
+			height: 32px;
+			font-size: 18px;
+			text-align: center;
+			line-height: 30px;
+			z-index: 2;
+
+			button {
+				width: 100%;
+				height: 100%;
+				background-color: #fff;
+
+				&.disabled {
+					opacity: 0.5;
+				}
+			}
+		}
 	}
 
 	.right-hand {
 		right: 0;
-	}
-
-	.input-box {
-		margin: 10px 0;
-		position: absolute;
-		bottom: 0;
-	}
-
-	.video-box {
-		max-width: 80%;
-		max-height: 80%;
-	}
-
-	video {
-		max-width: 100%;
-		max-height: 100%;
-	}
-
-	.extract {
-		position: absolute;
-		top: 50%;
-		right: -48px;
-		width: 96px;
-		height: 32px;
-		font-size: 18px;
-		text-align: center;
-		line-height: 30px;
-		z-index: 2;
-
-		button {
-			width: 100%;
-			height: 100%;
-			background-color: #fff;
-
-			&.disabled {
-				opacity: 0.5;
-			}
-		}
 	}
 
 	.done-btns {

@@ -15,6 +15,7 @@
 		scenery,
 		conversationStore,
 		animationQueueStore,
+		selectedAnimationKeyStore,
 	} from "../../store/store";
 	import TextBubble from "../../components/TextBubble.svelte";
 
@@ -38,6 +39,8 @@
 	let diva_mixer: THREE.AnimationMixer;
 
 	let diva_action: THREE.AnimationAction;
+
+	let selectedAnimationKeyUnsubscribe: Function;
 
 	const clock = new THREE.Clock();
 
@@ -244,6 +247,12 @@
 		},
 	);
 
+	selectedAnimationKeyUnsubscribe = selectedAnimationKeyStore.subscribe(
+		(key) => {
+			// todo, go to the gym page, with the selected animation
+		},
+	);
+
 	/**
 	 * Out of onMount, beforeUpdate, afterUpdate and onDestroy,
 	 * this is the only one that runs inside a server-side component.
@@ -263,6 +272,10 @@
 
 		// unsubscribe all stores
 		unsubscribe_queue_data();
+
+		if (selectedAnimationKeyUnsubscribe) {
+			selectedAnimationKeyUnsubscribe();
+		}
 	});
 </script>
 

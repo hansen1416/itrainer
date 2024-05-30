@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 
 export default class WebStorage {
 
-    static storage: Storage | null = browser ? window.sessionStorage : null;
+    static storage: Storage | null = browser ? window.localStorage : null;
 
     constructor() {
 
@@ -15,7 +15,7 @@ export default class WebStorage {
         }
 
         if (typeof data === 'object') {
-            WebStorage.storage.setItem(key, JSON.stringify(data));
+            WebStorage.storage.setItem(key, JSON.stringify(data, null, 2));
         } else {
             WebStorage.storage.setItem(key, data);
         }
