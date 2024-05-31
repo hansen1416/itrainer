@@ -7,7 +7,7 @@ import { type GLTF } from "@types/three/examples/jsm/loaders/GLTFLoader.d.ts"
 // @ts-ignore
 import { type BVH } from "@types/three/examples/jsm/loaders/BVHLoader.d.ts"
 import * as THREE from "three";
-
+import { PoseLandmarker } from "@mediapipe/tasks-vision";
 import type { QuaternionArray } from "../types";
 
 export function randomString(length: number): string {
@@ -155,6 +155,18 @@ export function rotateBones(
             bone.quaternion.fromArray(rotation);
         }
     }
+}
+
+
+export function createPoseLandmarksDetector(vision: any): Promise<PoseLandmarker> {
+    return PoseLandmarker.createFromOptions(vision, {
+        baseOptions: {
+            modelAssetPath: `/task-vision/pose_landmarker_lite.task`,
+            delegate: "GPU",
+        },
+        runningMode: "VIDEO",
+        numPoses: 1,
+    })
 }
 
 

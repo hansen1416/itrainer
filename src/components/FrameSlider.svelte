@@ -28,7 +28,6 @@
 	let deleteFrameIdx: number | null = null;
 
 	onMount(() => {
-		// todo update range.min and max
 		noUiSlider.create(slider, {
 			start: [0],
 			tooltips: {
@@ -62,6 +61,7 @@
 		slider !== undefined &&
 		(slider as SlierHTMLElement).noUiSlider !== undefined
 	) {
+		// update range.min and max
 		(slider as SlierHTMLElement).noUiSlider.updateOptions({
 			range: {
 				min: min_value,

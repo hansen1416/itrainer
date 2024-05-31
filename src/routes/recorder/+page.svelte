@@ -11,7 +11,11 @@
 	import JointsPosition2Rotation from "../../lib/JointsPosition2Rotation";
 	import AnimationData from "../../lib/AnimationData";
 	import ApiRequest from "../../lib/ApiRequest";
-	import { loadGLTF, rotateBones } from "../../utils/ropes";
+	import {
+		loadGLTF,
+		rotateBones,
+		createPoseLandmarksDetector,
+	} from "../../utils/ropes";
 
 	let rightHandBlock: HTMLDivElement;
 
@@ -107,16 +111,11 @@
 				}
 			});
 
-			PoseLandmarker.createFromOptions(vision, {
-				baseOptions: {
-					modelAssetPath: `/task-vision/pose_landmarker_lite.task`,
-					delegate: "GPU",
+			createPoseLandmarksDetector(vision).then(
+				(detector: PoseLandmarker) => {
+					poseLandmarker = detector;
 				},
-				runningMode: "VIDEO",
-				numPoses: 1,
-			}).then((landmarker: PoseLandmarker) => {
-				poseLandmarker = landmarker;
-			});
+			);
 
 			animate();
 		});

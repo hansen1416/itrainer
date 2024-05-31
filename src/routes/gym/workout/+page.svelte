@@ -1,25 +1,46 @@
 <script lang="ts">
 	import { onDestroy, onMount } from "svelte";
+	import { page } from "$app/stores";
 
-	import WebSocketClient from "../../../lib/WebSocketClient";
-	import { derived } from "svelte/store";
+	import ApiRequest from "../../../lib/ApiRequest";
 	import {
-		diva,
 		animationQueueStore,
-		websocketStateStore,
+		animationDictStore,
 	} from "../../../store/store";
+	import { createPoseLandmarksDetector } from "../../../utils/ropes";
+	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
-	export let id;
+	let poseLandmarkerDetector: PoseLandmarker;
 
-	// websocket client
-	let wsClient = new WebSocketClient();
-	// make sure animation data only send once dispite of websocket state change
-	let animation_request_sent = false;
-	// make sure menu only show when animation played, not when page first loaded
-	let animation_played = false;
+	onMount(() => {
+		// load the animation data by `$page.params.id`
+		// and load mediapipe pose landmarker
+		Promise.all([
+			ApiRequest.getAnimationData($page.params.id),
+			FilesetResolver.forVisionTasks(`/task-vision/`),
+		]).then(([animData, vision]) => {
+			animationDictStore.set({
+				[`${$page.params.id}`]: JSON.stringify(animData.data),
+			});
 
-	onMount(() => {});
+			animationQueueStore.set([
+				{
+					name: $page.params.id,
+					repeat: 1,
+					text: "",
+				},
+			]);
 
+			// todo add shaow which follow the user's movement
+			createPoseLandmarksDetector(vision).then(
+				(detector: PoseLandmarker) => {
+					poseLandmarkerDetector = detector;
+				},
+			);
+		});
+	});
+
+	/**
 	const _derived_diva_ws = derived(
 		[diva, websocketStateStore],
 		([_diva, _websocket_state]) => {
@@ -51,12 +72,12 @@
 				return;
 			}
 
-			if (!id) {
+			if (!$page.params.id) {
 				console.error("id is not provided");
 				return;
 			}
 
-			const msg = "amq:" + id;
+			const msg = "amq:" + $page.params.id;
 
 			// when websocket is connected, request the animation sequence data needed in this component
 			// it's a list of animation metadata
@@ -79,9 +100,7 @@
 			}
 		},
 	);
+	*/
 
-	onDestroy(() => {
-		unsubscribe_derived_diva_ws();
-		unsubscribe_animation_queue();
-	});
+	onDestroy(() => {});
 </script>
