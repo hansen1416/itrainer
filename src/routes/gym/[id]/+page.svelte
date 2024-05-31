@@ -13,6 +13,7 @@
 	let poseLandmarkerDetector: PoseLandmarker;
 
 	onMount(() => {
+		console.log("page params id: ", $page.params.id);
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([

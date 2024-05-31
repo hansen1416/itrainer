@@ -8,7 +8,7 @@ import { type GLTF } from "@types/three/examples/jsm/loaders/GLTFLoader.d.ts"
 import { type BVH } from "@types/three/examples/jsm/loaders/BVHLoader.d.ts"
 import * as THREE from "three";
 import { PoseLandmarker } from "@mediapipe/tasks-vision";
-import type { QuaternionArray } from "../types";
+import type { QuaternionArray, AnimationDataObject } from "../types";
 
 export function randomString(length: number): string {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
@@ -306,4 +306,37 @@ export function loadScenery(_scenery: THREE.Object3D) {
                 reject(err);
             });
     });
+}
+
+export function animtionThreeFormat(animationData: AnimationDataObject): object {
+    const animationClip = {
+        "name": "some name", "duration": 0, tracks: [], "uuid": "", "blendMode": 2500
+    }
+
+    const totalFrames = Object.values(animationData)[0].length;
+    // 60 frames per second
+    animationClip.duration = totalFrames / 60;
+
+    // generate a list of length totalFrames, from 0 to duration, gap of 1/60
+    const times = Array.from({ length: totalFrames }, (_, i) => i / 60);
+
+    for (const [boneName, rotationData] of Object.entries(animationData)) {
+        const track = {
+            "name": boneName + ".quaternion",
+            "type": "quaternion",
+            "times": times,
+            "values": []
+        }
+
+
+        for (const quaternion of rotationData) {
+            track.values = track.values.concat(quaternion as any);
+        }
+
+        animationClip.tracks.push(track as never);
+    }
+
+
+    return animationClip;
+
 }

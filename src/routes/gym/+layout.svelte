@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
+	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
 	import * as THREE from "three";
 	import Stats from "three/examples/jsm/libs/stats.module.js";
 	import { derived } from "svelte/store";
 
 	import ThreeScene from "../../lib/ThreeScene";
-	import { loadDiva, loadScenery, invokeCamera } from "../../utils/ropes";
+	import {
+		loadDiva,
+		loadScenery,
+		animtionThreeFormat,
+		invokeCamera,
+	} from "../../utils/ropes";
 	// import PoseDetector from "../../lib/PoseDetector";
 	import type { AnimationQueueItem } from "../../types/index";
 	import {
@@ -226,7 +232,13 @@
 				(_animationDict as { [key: string]: string })[animation_name],
 			);
 
-			const animation_clip = THREE.AnimationClip.parse(animation_json);
+			// need convert bones:euler to threejs animation format
+			const animation_clip_json = animtionThreeFormat(animation_json);
+
+			console.log("animation_clip_json", animation_clip_json);
+
+			const animation_clip =
+				THREE.AnimationClip.parse(animation_clip_json);
 
 			diva_action = diva_mixer.clipAction(animation_clip);
 
@@ -249,7 +261,10 @@
 
 	selectedAnimationKeyUnsubscribe = selectedAnimationKeyStore.subscribe(
 		(key) => {
-			// todo, go to the gym page, with the selected animation
+			if (browser && key) {
+				// go to the gym/[id], with the selected animation
+				goto(`/gym/${key}`);
+			}
 		},
 	);
 
