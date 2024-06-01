@@ -3,7 +3,10 @@
 	import { onDestroy } from "svelte";
 	import { page } from "$app/stores";
 	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
+	import type { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 
+	import type { WorldPoseLandmarks } from "../../../types";
+	import JointsPosition2Rotation from "../../../lib/JointsPosition2Rotation";
 	import ApiRequest from "../../../lib/ApiRequest";
 	import {
 		gymReady,
@@ -15,20 +18,39 @@
 		invokeCamera,
 	} from "../../../utils/ropes";
 
+	let animation_pointer = 0;
+
 	let video: HTMLVideoElement;
 
 	let camera_ready = false;
 	let detector_ready = false;
-	let show_video = false;
 
 	let poseLandmarkerDetector: PoseLandmarker;
 
-	let animation_pointer = 0;
+	// convert pose landmarks to bone rotations
+	let jointsPos2Rot = new JointsPosition2Rotation();
 
 	function animate() {
 		if (detector_ready && camera_ready) {
-			// todo try to run prediction asynchrously
-			// poseDetector.predict(video);
+			try {
+				poseLandmarkerDetector.detectForVideo(
+					video,
+					performance.now(),
+					(result: PoseLandmarkerResult) => {
+						const worldLandmarks: WorldPoseLandmarks =
+							result.worldLandmarks[0];
+						// console.log(worldLandmarks);
+						// // calculate the rotation of each bone based on the landmarks
+						// jointsPos2Rot.applyPose2Bone(worldLandmarks);
+						// console.log(jointsPos2Rot.getRotationsArray());
+						// apply the rotation to the bones of the model
+						// rotateBones(jointsPos2Rot.getRotationsArray(), bones);
+						// // save the rotation data of the frame for the animation
+					},
+				);
+			} catch (e) {
+				console.error("detector error");
+			}
 		}
 
 		animation_pointer = requestAnimationFrame(animate);
@@ -38,7 +60,6 @@
 		if (!ready) {
 			return;
 		}
-		console.log("gym ready play animation ", $page.params.id);
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([
@@ -151,33 +172,19 @@
 		autoPlay={true}
 		width={480 / 2}
 		height={360 / 2}
-		style="position: absolute; top:0; left: 0; display: {show_video
-			? 'block'
-			: 'none'}"
+		style="position: absolute; top:0; left: 0; display: block;"
 	>
 		<track label="English" kind="captions" default />
 	</video>
 
 	<div class="controls">
 		<div>
-			<!-- 
-		{#if show_video}
-			<button
-				on:click={() => {
-					show_video = !show_video;
-				}}>hide video</button
-			>
-		{:else}
-			<button
-				on:click={() => {
-					show_video = !show_video;
-				}}>show video</button
-			>
-		{/if} -->
-
 			<button
 				class={camera_ready ? "active" : ""}
 				on:click={() => {
+					if (camera_ready) {
+						return;
+					}
 					// initialize camera
 					invokeCamera(video, () => {});
 				}}><img src="/svg/camera.svg" alt="Play" /></button
