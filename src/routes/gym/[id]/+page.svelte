@@ -1,9 +1,12 @@
 <script lang="ts">
-	import { onDestroy, onMount } from "svelte";
+	import { browser } from "$app/environment";
+	import { onDestroy } from "svelte";
 	import { page } from "$app/stores";
+	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 	import ApiRequest from "../../../lib/ApiRequest";
 	import {
+		gymReady,
 		animationQueueStore,
 		animationDictStore,
 	} from "../../../store/store";
@@ -11,7 +14,6 @@
 		createPoseLandmarksDetector,
 		invokeCamera,
 	} from "../../../utils/ropes";
-	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
 	let video: HTMLVideoElement;
 
@@ -32,8 +34,11 @@
 		animation_pointer = requestAnimationFrame(animate);
 	}
 
-	onMount(() => {
-		console.log("mount 3", $page.params.id);
+	const gymReadyStoreUnsubscribe = gymReady.subscribe((ready) => {
+		if (!ready) {
+			return;
+		}
+
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([
@@ -65,7 +70,12 @@
 		});
 	});
 
-	onDestroy(() => {});
+	onDestroy(() => {
+		if (browser) {
+			cancelAnimationFrame(animation_pointer);
+		}
+		gymReadyStoreUnsubscribe();
+	});
 
 	/**
 	const _derived_diva_ws = derived(

@@ -50,8 +50,6 @@
 	}
 
 	onMount(() => {
-		console.log("mount 1");
-
 		threeScene = new ThreeScene(
 			canvas,
 			document.documentElement.clientWidth,
