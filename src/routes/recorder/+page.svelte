@@ -15,6 +15,7 @@
 		loadGLTF,
 		rotateBones,
 		createPoseLandmarksDetector,
+		readModelBones,
 	} from "../../utils/ropes";
 
 	let rightHandBlock: HTMLDivElement;
@@ -97,6 +98,8 @@
 			diva.position.set(0, -1, 0);
 
 			threeScene.scene.add(diva);
+
+			readModelBones(diva, bones);
 
 			diva.traverse((node: THREE.Object3D) => {
 				if ((node as THREE.SkinnedMesh).isMesh) {

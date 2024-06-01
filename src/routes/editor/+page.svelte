@@ -24,6 +24,7 @@
 		getNamedIntersects,
 		setMeshOpacity,
 		getMousePosition,
+		readModelBones,
 	} from "../../utils/ropes";
 	import ApiRequest from "../../lib/ApiRequest";
 
@@ -134,25 +135,7 @@
 
 			threeScene.scene.add(diva);
 
-			diva.traverse((node: THREE.Object3D) => {
-				// @ts-ignore
-				if (node.isMesh) {
-					node.castShadow = true;
-
-					const mat = (node as THREE.SkinnedMesh)
-						.material as THREE.MeshStandardMaterial;
-
-					mat.transparent = true;
-				}
-				// @ts-ignore
-				if (node.isBone) {
-					// @ts-ignore
-					if (bones[node.name] === undefined) {
-						// somehow maximo has double bones, so only use the first one
-						bones[node.name] = node as THREE.Bone;
-					}
-				}
-			});
+			readModelBones(diva, bones);
 
 			// add the controls we need
 			threeScene.scene.add(skeleton.group);

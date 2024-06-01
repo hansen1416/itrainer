@@ -2,6 +2,7 @@
 	import { browser } from "$app/environment";
 	import { onDestroy } from "svelte";
 	import { page } from "$app/stores";
+	import * as THREE from "three";
 	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 	import type { PoseLandmarkerResult } from "@mediapipe/tasks-vision";
 
@@ -17,6 +18,7 @@
 		createPoseLandmarksDetector,
 		invokeCamera,
 		loadDiva,
+		readModelBones,
 	} from "../../../utils/ropes";
 	import ThreeScene from "../../../lib/ThreeScene";
 
@@ -31,6 +33,7 @@
 
 	let poseLandmarkerDetector: PoseLandmarker;
 
+	let bones: { [key: string]: THREE.Bone } = {};
 	// convert pose landmarks to bone rotations
 	let jointsPos2Rot = new JointsPosition2Rotation();
 
@@ -75,6 +78,8 @@
 			threeScene = ThreeScene.getInstance();
 
 			threeScene.scene.add(shadow);
+
+			readModelBones(shadow, bones);
 
 			animationDictStore.update((oldStore) => {
 				return {

@@ -331,3 +331,15 @@ export function animtionThreeFormat(animationData: AnimationDataObject): THREEAn
 
     return animationClip;
 }
+
+export function readModelBones(model: THREE.Object3D, bones: { [key: string]: THREE.Bone }): void {
+
+    model.traverse((node: THREE.Object3D) => {
+        if ((node as THREE.Bone).isBone) {
+            if (bones[node.name] === undefined) {
+                // somehow maximo has double bones, so only use the first one
+                bones[node.name] = node as THREE.Bone;
+            }
+        }
+    });
+}
