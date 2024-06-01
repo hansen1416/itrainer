@@ -18,7 +18,7 @@
 		createPoseLandmarksDetector,
 		invokeCamera,
 		loadDiva,
-		readModelBones,
+		rotateBones,
 	} from "../../../utils/ropes";
 	import ThreeScene from "../../../lib/ThreeScene";
 
@@ -46,13 +46,13 @@
 					(result: PoseLandmarkerResult) => {
 						const worldLandmarks: WorldPoseLandmarks =
 							result.worldLandmarks[0];
-						// console.log(worldLandmarks);
-						// // calculate the rotation of each bone based on the landmarks
-						// jointsPos2Rot.applyPose2Bone(worldLandmarks);
+						console.log(worldLandmarks);
+						// calculate the rotation of each bone based on the landmarks
+						jointsPos2Rot.applyPose2Bone(worldLandmarks);
 						// console.log(jointsPos2Rot.getRotationsArray());
 						// apply the rotation to the bones of the model
-						// rotateBones(jointsPos2Rot.getRotationsArray(), bones);
-						// // save the rotation data of the frame for the animation
+						rotateBones(jointsPos2Rot.getRotationsArray(), bones);
+						// save the rotation data of the frame for the animation
 					},
 				);
 			} catch (e) {
@@ -68,6 +68,10 @@
 			return;
 		}
 
+		video.onloadeddata = () => {
+			camera_ready = true;
+		};
+
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([
@@ -77,9 +81,28 @@
 		]).then(([shadow, animData, vision]) => {
 			threeScene = ThreeScene.getInstance();
 
-			threeScene.scene.add(shadow);
+			shadow.traverse((node: THREE.Object3D) => {
+				// @ts-ignore
+				if (node.isMesh) {
+					node.castShadow = true;
 
-			readModelBones(shadow, bones);
+					const mat = (node as THREE.SkinnedMesh)
+						.material as THREE.MeshStandardMaterial;
+
+					mat.transparent = true;
+					mat.opacity = 0.3;
+				}
+				// @ts-ignore
+				if (node.isBone) {
+					// @ts-ignore
+					if (bones[node.name] === undefined) {
+						// somehow maximo has double bones, so only use the first one
+						bones[node.name] = node as THREE.Bone;
+					}
+				}
+			});
+
+			threeScene.scene.add(shadow);
 
 			animationDictStore.update((oldStore) => {
 				return {

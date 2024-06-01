@@ -152,6 +152,7 @@ export function rotateBones(
         const bone = modelBones[boneName];
 
         if (bone) {
+            console.log(boneName, rotation);
             bone.quaternion.fromArray(rotation);
         }
     }
