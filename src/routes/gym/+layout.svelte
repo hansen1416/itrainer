@@ -208,6 +208,8 @@
 			if (browser && key) {
 				// go to the gym/[id], with the selected animation
 				goto(`/gym/${key}`);
+
+				selectedAnimationKeyStore.set(null);
 			}
 		},
 	);
