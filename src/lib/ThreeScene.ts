@@ -17,7 +17,7 @@ export default class ThreeScene {
     private static _instance: ThreeScene;
 
 
-    public static getInstance(canvas: HTMLCanvasElement | null = null, width: number, height: number, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)): ThreeScene {
+    public static getInstance(canvas: HTMLCanvasElement | null = null, width: number = 0, height: number = 0, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)): ThreeScene {
         if (!ThreeScene._instance) {
 
             if (canvas === null) {

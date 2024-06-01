@@ -13,8 +13,6 @@
 		conversationStore,
 	} from "../../store/store";
 
-	// show menu when animation queue is empty
-	let show_menu = false;
 	// make sure menu only show when animation played, not when page first loaded
 	let animation_played = false;
 
@@ -47,9 +45,6 @@
 		(a_queue) => {
 			if (a_queue.length === 0) {
 				if (animation_played) {
-					// when there is animation palyed, and the queue empty render menu component
-					show_menu = true;
-
 					conversationStore.set(null);
 				}
 			} else {

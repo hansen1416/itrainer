@@ -72,7 +72,7 @@
 			ApiRequest.getAnimationData($page.params.id),
 			FilesetResolver.forVisionTasks(`/task-vision/`),
 		]).then(([shadow, animData, vision]) => {
-			threeScene = ThreeScene.getInstance(null, 0, 0);
+			threeScene = ThreeScene.getInstance();
 
 			threeScene.scene.add(shadow);
 
