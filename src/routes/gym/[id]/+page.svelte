@@ -16,7 +16,11 @@
 	import {
 		createPoseLandmarksDetector,
 		invokeCamera,
+		loadDiva,
 	} from "../../../utils/ropes";
+	import ThreeScene from "../../../lib/ThreeScene";
+
+	let threeScene: ThreeScene;
 
 	let animation_pointer = 0;
 
@@ -60,12 +64,18 @@
 		if (!ready) {
 			return;
 		}
+
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([
+			loadDiva(),
 			ApiRequest.getAnimationData($page.params.id),
 			FilesetResolver.forVisionTasks(`/task-vision/`),
-		]).then(([animData, vision]) => {
+		]).then(([shadow, animData, vision]) => {
+			threeScene = ThreeScene.getInstance(null, 0, 0);
+
+			threeScene.scene.add(shadow);
+
 			animationDictStore.update((oldStore) => {
 				return {
 					...oldStore,

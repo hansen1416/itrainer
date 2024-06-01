@@ -50,7 +50,7 @@
 	}
 
 	onMount(() => {
-		threeScene = new ThreeScene(
+		threeScene = ThreeScene.getInstance(
 			canvas,
 			document.documentElement.clientWidth,
 			document.documentElement.clientHeight,

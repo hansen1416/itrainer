@@ -3,21 +3,7 @@ import { OrbitControls } from '@three-ts/orbit-controls';
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
 
-/**
- * @class ThreeScene
- * @description
- * This class is a singleton, so we only have 1 threejs scene
- *
- * @property {THREE.Scene} scene
- * @property {THREE.PerspectiveCamera} camera
- * @property {THREE.WebGLRenderer} renderer
- * @property {OrbitControls} controls
- * @property {THREE.DirectionalLight} light
- * @property {THREE.Clock} clock
- *
- * @method onFrameUpdate
- * @method resetControl
- */
+
 export default class ThreeScene {
 
     scene: THREE.Scene;
@@ -28,6 +14,21 @@ export default class ThreeScene {
 
     controls: OrbitControls;
 
+    private static _instance: ThreeScene;
+
+
+    public static getInstance(canvas: HTMLCanvasElement | null = null, width: number, height: number, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)): ThreeScene {
+        if (!ThreeScene._instance) {
+
+            if (canvas === null) {
+                throw new Error("canvas is null");
+            }
+
+            ThreeScene._instance = new ThreeScene(canvas as HTMLCanvasElement, width, height, initialCameraPosition);
+        }
+        return ThreeScene._instance;
+    }
+
 
     /**
      * 
@@ -35,7 +36,9 @@ export default class ThreeScene {
      * @param width 
      * @param height 
      */
-    constructor(canvas: HTMLCanvasElement, width: number, height: number, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)) {
+    private constructor(canvas: HTMLCanvasElement, width: number, height: number, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)) {
+        // make it a singleton, so we only have 1 threejs scene
+
 
         this.scene = new THREE.Scene();
 
@@ -89,8 +92,6 @@ export default class ThreeScene {
         // this.controls.maxDistance = 800;
 
         this.renderer.setSize(width, height);
-
-
     }
 
     dispose() {

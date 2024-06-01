@@ -82,7 +82,7 @@
 	onMount(() => {
 		const rect = rightHandBlock.getBoundingClientRect();
 
-		threeScene = new ThreeScene(canvas, rect.width, rect.height);
+		threeScene = ThreeScene.getInstance(canvas, rect.width, rect.height);
 		// initialize the animation data with the model bone names
 		animationData.initalize(jointsPos2Rot.getModelBoneNames());
 
