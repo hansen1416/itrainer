@@ -14,9 +14,8 @@
 	} from "../../utils/ropes";
 	import type { AnimationQueueItem } from "../../types/index";
 	import {
+		gymReady,
 		animationDictStore,
-		diva,
-		scenery,
 		conversationStore,
 		animationQueueStore,
 		selectedAnimationKeyStore,
@@ -51,6 +50,8 @@
 	}
 
 	onMount(() => {
+		console.log("mount 1");
+
 		threeScene = new ThreeScene(
 			canvas,
 			document.documentElement.clientWidth,
@@ -70,53 +71,11 @@
 			stats.dom.style.bottom = "0";
 		}
 
-		Promise.all([
-			loadDiva($diva as THREE.Object3D),
-			loadScenery($scenery as THREE.Object3D),
-		])
-			.then(([fbx, room]) => {
-				diva.set(fbx as THREE.Object3D);
+		Promise.all([loadDiva(), loadScenery()])
+			.then(([_diva, _scenery]) => {
+				_diva.name = "diva";
 
-				scenery.set(room as THREE.Object3D);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-
-		animate();
-	});
-
-	// we need to watch both animation_queue and animation_data, make sure they both complete
-	const _derived_queue_data = derived(
-		[scenery, diva, animationQueueStore, animationDictStore],
-		([_scenery, _diva, _animationQueue, _animationDict]) => {
-			return [_scenery, _diva, _animationQueue, _animationDict];
-		},
-	);
-
-	/**
-	 * watch animation_queue, when it changes,
-	 * check all the resouces needed for the animation is ready
-	 * check whether animation in play
-	 * if no, play the first animation
-	 * if yes, do nothing
-	 */
-	const unsubscribe_queue_data = _derived_queue_data.subscribe(
-		([_scenery, _diva, _animationQueue, _animationDict]) => {
-			if (!threeScene) {
-				return;
-			}
-
-			if (!_diva || !_scenery) {
-				// diva/scenery is not ready, do nothing
-				return;
-			}
-
-			if (!threeScene.scene.getObjectByName("diva")) {
-				// diva is already in the scene, do nothing
-				(_diva as THREE.Object3D).name = "diva";
-
-				diva_mixer = new THREE.AnimationMixer(_diva as THREE.Object3D);
+				diva_mixer = new THREE.AnimationMixer(_diva);
 
 				diva_mixer.addEventListener("finished", () => {
 					// when one animation finished, remove the first animation from queue
@@ -132,18 +91,40 @@
 					);
 				});
 
-				threeScene.scene.add(_diva as THREE.Object3D);
-
-				console.log("add diva to scene");
-			}
-
-			if (!threeScene.scene.getObjectByName("scenery")) {
-				// scenery is already in the scene, do nothing
-				(_scenery as THREE.Object3D).name = "scenery";
+				_scenery.name = "scenery";
 
 				threeScene.scene.add(_scenery as THREE.Object3D);
 
-				console.log("add scenery to scene");
+				threeScene.scene.add(_diva as THREE.Object3D);
+
+				gymReady.set(true);
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+
+		animate();
+	});
+
+	// we need to watch both animation_queue and animation_data, make sure they both complete
+	const _derived_queue_data = derived(
+		[animationQueueStore, animationDictStore],
+		([_animationQueue, _animationDict]) => {
+			return [_animationQueue, _animationDict];
+		},
+	);
+
+	/**
+	 * watch animation_queue, when it changes,
+	 * check all the resouces needed for the animation is ready
+	 * check whether animation in play
+	 * if no, play the first animation
+	 * if yes, do nothing
+	 */
+	const unsubscribe_queue_data = _derived_queue_data.subscribe(
+		([_animationQueue, _animationDict]) => {
+			if (!threeScene) {
+				return;
 			}
 
 			// when animation_queue and animation_data are both ready
@@ -265,7 +246,6 @@
 	/**
  * 
 import { browser } from "$app/environment";
-import WebSocketClient from "../lib/WebSocketClient";
 import WebSocketClient from "../lib/WebSocketClient";
 import type { AnimationQueueItem } from "../types/index";
 import {

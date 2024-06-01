@@ -260,11 +260,7 @@ export const BlazePoseKeypointsValues = {
 };
 
 
-export function loadDiva(_diva: THREE.Object3D) {
-    if (_diva && typeof _diva === "object" && _diva.isObject3D === true) {
-        return Promise.resolve(_diva);
-    }
-
+export function loadDiva(): Promise<THREE.Object3D> {
     return new Promise((resolve, reject) => {
         loadGLTF("/glb/dors.glb")
             .then((dors) => {
@@ -280,15 +276,7 @@ export function loadDiva(_diva: THREE.Object3D) {
     });
 }
 
-export function loadScenery(_scenery: THREE.Object3D) {
-    if (
-        _scenery &&
-        typeof _scenery === "object" &&
-        _scenery.isObject3D === true
-    ) {
-        return Promise.resolve(_scenery);
-    }
-
+export function loadScenery(): Promise<THREE.Object3D> {
     return new Promise((resolve, reject) => {
         loadGLTF("/glb/vr_exhibition_gallery_baked.glb")
             .then((glb) => {

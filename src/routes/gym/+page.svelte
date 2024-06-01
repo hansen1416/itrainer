@@ -3,11 +3,11 @@
 	 * this is the welcome page of the gym
 	 */
 
-	import { onDestroy, onMount } from "svelte";
+	import { onDestroy } from "svelte";
 
-	// import Menu from "../../components/Menu.svelte";
 	import { loadJSON } from "../../utils/ropes";
 	import {
+		gymReady,
 		animationQueueStore,
 		animationDictStore,
 		conversationStore,
@@ -18,29 +18,32 @@
 	// make sure menu only show when animation played, not when page first loaded
 	let animation_played = false;
 
-	onMount(() => {
-		// wsClient = $websocket;
-		// we need store to keep diva and scenery
-		Promise.all([loadJSON("json/waving.json")])
-			.then(([waving]) => {
-				animationDictStore.set({
-					waving: JSON.stringify(waving),
-				});
+	const gymReadyStoreUnsubscribe = gymReady.subscribe((ready) => {
+		if (ready) {
+			// when gym is ready, start the animation
+			// wsClient = $websocket;
+			// we need store to keep diva and scenery
+			Promise.all([loadJSON("json/waving.json")])
+				.then(([waving]) => {
+					animationDictStore.set({
+						waving: JSON.stringify(waving),
+					});
 
-				animationQueueStore.set([
-					{
-						name: "waving",
-						repeat: 1,
-						text: "Hi there, I am Anya, let's start the gym session!",
-					},
-				]);
-			})
-			.catch((err) => {
-				console.error(err);
-			});
+					animationQueueStore.set([
+						{
+							name: "waving",
+							repeat: 1,
+							text: "Hi there, I am Anya, let's start the gym session!",
+						},
+					]);
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		}
 	});
 
-	const unsubscribe_animation_queue = animationQueueStore.subscribe(
+	const animationQueueStoreUnsubscribe = animationQueueStore.subscribe(
 		(a_queue) => {
 			if (a_queue.length === 0) {
 				if (animation_played) {
@@ -57,8 +60,8 @@
 
 	onDestroy(() => {
 		// // unsubscribe all stores
-		// unsubscribe_derived_store();
-		unsubscribe_animation_queue();
+		gymReadyStoreUnsubscribe();
+		animationQueueStoreUnsubscribe();
 	});
 </script>
 

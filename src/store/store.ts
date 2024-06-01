@@ -11,16 +11,14 @@ export const controlType = writable<ControlType>(WebStorage.read("control_type")
 
 export const currentRotation = writable<THREE.Euler | null>(null);
 
-export const selectedBone = writable<THREE.Object3D | null>(null)
+export const selectedBone = writable<THREE.Object3D | null>(null);
+
+export const gymReady = writable<boolean>(false);
 
 // key, value dictionary, keep all the animation data
-export const animationDictStore = writable<{ [key: string]: string }>({})
+export const animationDictStore = writable<{ [key: string]: string }>({});
 
-export const diva = writable<THREE.Object3D | null>(null);
-
-export const scenery = writable<THREE.Object3D | null>(null);
-
-export const conversationStore = writable<string[] | null>([])
+export const conversationStore = writable<string[] | null>([]);
 
 export const animationQueueStore = writable<AnimationQueueItem[]>([]);
 
