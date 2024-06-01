@@ -11,9 +11,7 @@
 		loadDiva,
 		loadScenery,
 		animtionThreeFormat,
-		invokeCamera,
 	} from "../../utils/ropes";
-	// import PoseDetector from "../../lib/PoseDetector";
 	import type { AnimationQueueItem } from "../../types/index";
 	import {
 		animationDictStore,
@@ -25,21 +23,12 @@
 	} from "../../store/store";
 	import TextBubble from "../../components/TextBubble.svelte";
 
-	let video: HTMLVideoElement;
-
 	let canvas: HTMLCanvasElement;
 
 	let threeScene: ThreeScene;
 
 	let stats: Stats;
 
-	// let poseDetector = new PoseDetector();
-
-	// let playerController = undefined;
-
-	let capture_pose = false;
-	let detector_ready = false;
-	let show_video = false;
 	let animation_pointer = 0;
 
 	let diva_mixer: THREE.AnimationMixer;
@@ -57,11 +46,6 @@
 
 		// update physics world and threejs renderer
 		threeScene.onFrameUpdate(stats);
-
-		if (detector_ready && capture_pose) {
-			// todo try to run prediction asynchrously
-			// poseDetector.predict(video);
-		}
 
 		animation_pointer = requestAnimationFrame(animate);
 	}
@@ -99,21 +83,8 @@
 				console.error(err);
 			});
 
-		// initialize camera
-		// invokeCamera(video, () => {});
-		// initialize pose detector
-		// Promise.all([poseDetector.init(poseCallback)]).then(([_]) => {
-		// 	detector_ready = true;
-		// });
-
 		animate();
 	});
-
-	// function poseCallback(keypoints3D) {
-	// 	if (playerController) {
-	// 		playerController.applyPose2Bone(keypoints3D, true);
-	// 	}
-	// }
 
 	// we need to watch both animation_queue and animation_data, make sure they both complete
 	const _derived_queue_data = derived(
@@ -235,8 +206,6 @@
 			// need convert bones:euler to threejs animation format
 			const animation_clip_json = animtionThreeFormat(animation_json);
 
-			console.log("animation_clip_json", animation_clip_json);
-
 			const animation_clip =
 				THREE.AnimationClip.parse(animation_clip_json);
 
@@ -297,60 +266,13 @@
 <!-- section is not needed, only for readablity -->
 <section>
 	<canvas bind:this={canvas} />
-
-	<video
-		bind:this={video}
-		autoPlay={true}
-		width={480 / 2}
-		height={360 / 2}
-		style="position: absolute; top:0; left: 0; display: {show_video
-			? 'block'
-			: 'none'}"
-	>
-		<track label="English" kind="captions" default />
-	</video>
-
-	<div class="controls">
-		<div>
-			<button
-				on:click={() => {
-					threeScene.resetControl();
-				}}>Reset Control</button
-			>
-			<!-- 
-			{#if show_video}
-				<button
-					on:click={() => {
-						show_video = !show_video;
-					}}>hide video</button
-				>
-			{:else}
-				<button
-					on:click={() => {
-						show_video = !show_video;
-					}}>show video</button
-				>
-			{/if} -->
-
-			<button
-				class={capture_pose ? "active" : ""}
-				on:click={() => {
-					capture_pose = !capture_pose;
-				}}><img src="/svg/camera.svg" alt="Play" /></button
-			>
-
-			<button on:click={() => {}}>
-				<img src="/svg/play.svg" alt="Camera" />
-			</button>
-		</div>
-	</div>
 </section>
 
 <slot></slot>
 
 <TextBubble />
 
-<style>
+<style lang="scss">
 	canvas {
 		/* this will only affect <canvas> elements in this component */
 		/* z-index: -1; */
@@ -359,14 +281,5 @@
 		left: 0;
 		bottom: 0;
 		right: 0;
-	}
-
-	.controls {
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		padding: 10px;
-		display: flex;
-		justify-content: space-between;
 	}
 </style>

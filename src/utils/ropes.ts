@@ -8,7 +8,7 @@ import { type GLTF } from "@types/three/examples/jsm/loaders/GLTFLoader.d.ts"
 import { type BVH } from "@types/three/examples/jsm/loaders/BVHLoader.d.ts"
 import * as THREE from "three";
 import { PoseLandmarker } from "@mediapipe/tasks-vision";
-import type { QuaternionArray, AnimationDataObject } from "../types";
+import type { QuaternionArray, AnimationDataObject, THREEAnimtionClip } from "../types";
 
 export function randomString(length: number): string {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
@@ -308,7 +308,12 @@ export function loadScenery(_scenery: THREE.Object3D) {
     });
 }
 
-export function animtionThreeFormat(animationData: AnimationDataObject): object {
+export function animtionThreeFormat(animationData: AnimationDataObject): THREEAnimtionClip {
+    // it could be a THREE.AnimationClip already
+    if (animationData['tracks'] && animationData['tracks'] instanceof Array) {
+        return animationData as unknown as THREEAnimtionClip;
+    }
+
     const animationClip = {
         "name": "some name", "duration": 0, tracks: [], "uuid": "", "blendMode": 2500
     }
@@ -330,13 +335,11 @@ export function animtionThreeFormat(animationData: AnimationDataObject): object 
 
 
         for (const quaternion of rotationData) {
-            track.values = track.values.concat(quaternion as any);
+            track.values = track.values.concat(quaternion as never);
         }
 
         animationClip.tracks.push(track as never);
     }
 
-
     return animationClip;
-
 }

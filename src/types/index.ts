@@ -18,6 +18,8 @@ export type AnimationFrameDataObject = { [key: string]: QuaternionArray }
 
 export type AnimationJson = { data: AnimationDataObject, keyframes: { [key: string]: number[] } }
 
+export type THREEAnimtionClip = { name: string, duration: number, tracks: THREE.KeyframeTrack[], uuid: string, blendMode: number };
+
 export type DiaplayScene = "mesh" | "skeleton";
 
 export type ControlType = "rotation" | "translation" | "";
