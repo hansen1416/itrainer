@@ -38,24 +38,29 @@
 		if (!ready) {
 			return;
 		}
-
+		console.log("gym ready play animation ", $page.params.id);
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
 		Promise.all([
 			ApiRequest.getAnimationData($page.params.id),
 			FilesetResolver.forVisionTasks(`/task-vision/`),
 		]).then(([animData, vision]) => {
-			animationDictStore.set({
-				[`${$page.params.id}`]: JSON.stringify(animData.data),
+			animationDictStore.update((oldStore) => {
+				return {
+					...oldStore,
+					[$page.params.id]: JSON.stringify(animData.data),
+				};
 			});
 
-			animationQueueStore.set([
-				{
+			animationQueueStore.update((oldStore) => {
+				oldStore.push({
 					name: $page.params.id,
 					repeat: 1,
 					text: "",
-				},
-			]);
+				});
+
+				return oldStore;
+			});
 
 			// todo add shaow which follow the user's movement
 			createPoseLandmarksDetector(vision).then(

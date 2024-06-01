@@ -137,17 +137,13 @@
 				return;
 			}
 
-			// another animation is playing, do nothing
-			if (diva_action && diva_action.isRunning()) {
-				return;
-			}
-
 			// diva is not ready, do nothing
 			if (!diva_mixer) {
 				return;
 			}
 
-			if (!threeScene) {
+			// another animation is playing, do nothing
+			if (diva_action && diva_action.isRunning()) {
 				return;
 			}
 
