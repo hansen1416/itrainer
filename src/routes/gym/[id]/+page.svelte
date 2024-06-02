@@ -35,8 +35,8 @@
 	let poseLandmarkerDetector: PoseLandmarker;
 
 	let bones: { [key: string]: THREE.Bone } = {};
-	// convert pose landmarks to bone rotations
-	let jointsPos2Rot = new JointsPosition2Rotation();
+	// convert pose landmarks to bone rotations, mirror is true
+	let jointsPos2Rot = new JointsPosition2Rotation(true);
 
 	function animate() {
 		if (detector_ready && camera_ready) {
@@ -214,7 +214,7 @@
 </script>
 
 <section>
-	<video bind:this={video} autoPlay={true} width={480 / 2} height={360 / 2}>
+	<video bind:this={video} autoPlay={true} width={480} height={360}>
 		<track label="English" kind="captions" default />
 	</video>
 
@@ -239,7 +239,7 @@
 		position: absolute;
 		top: 0;
 		left: 0;
-		display: block;
+		display: none;
 		-webkit-transform: scaleX(-1);
 		transform: scaleX(-1);
 	}

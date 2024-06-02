@@ -3,9 +3,6 @@ import type { QuaternionArray, Vector3Array } from '../types/index';
 
 export default class JointsPosition2Rotation {
 
-
-    constructor() { }
-
     joints_map: { [key: string]: number } = {
         "NOSE": 0,
         "LEFT_EYE_INNER": 1,
@@ -96,6 +93,51 @@ export default class JointsPosition2Rotation {
         "RightUpLeg": ["Hips"],
         "LeftLeg": ["Hips", "LeftUpLeg"],
         "RightLeg": ["Hips", "RightUpLeg"],
+    }
+
+    mirror: boolean = false
+
+    constructor(mirror = false) {
+
+        this.mirror = mirror;
+
+        if (mirror) {
+            this.joints_map = {
+                "NOSE": 0,
+                "RIGHT_EYE_INNER": 1,
+                "RIGHT_EYE": 2,
+                "RIGHT_EYE_OUTER": 3,
+                "LEFT_EYE_INNER": 4,
+                "LEFT_EYE": 5,
+                "LEFT_EYE_OUTER": 6,
+                "RIGHT_EAR": 7,
+                "LEFT_EAR": 8,
+                "MOUTH_RIGHT": 9,
+                "MOUTH_LEFT": 10,
+                "RIGHT_SHOULDER": 11,
+                "LEFT_SHOULDER": 12,
+                "RIGHT_ELBOW": 13,
+                "LEFT_ELBOW": 14,
+                "RIGHT_WRIST": 15,
+                "LEFT_WRIST": 16,
+                "RIGHT_PINKY": 17,
+                "LEFT_PINKY": 18,
+                "RIGHT_INDEX": 19,
+                "LEFT_INDEX": 20,
+                "RIGHT_THUMB": 21,
+                "LEFT_THUMB": 22,
+                "RIGHT_HIP": 23,
+                "LEFT_HIP": 24,
+                "RIGHT_KNEE": 25,
+                "LEFT_KNEE": 26,
+                "RIGHT_ANKLE": 27,
+                "LEFT_ANKLE": 28,
+                "RIGHT_HEEL": 29,
+                "LEFT_HEEL": 30,
+                "RIGHT_FOOT_INDEX": 31,
+                "LEFT_FOOT_INDEX": 32,
+            };
+        }
     }
 
     getModelBoneNames(): string[] {
@@ -253,6 +295,9 @@ export default class JointsPosition2Rotation {
 
         // afjust the coordinate system from mediapipe to threejs
         for (let i in this.pose3d) {
+            if (this.mirror) {
+                this.pose3d[i].x = -this.pose3d[i].x;
+            }
             this.pose3d[i].y = -this.pose3d[i].y;
             this.pose3d[i].z = -this.pose3d[i].z;
         }
