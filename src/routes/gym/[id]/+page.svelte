@@ -156,7 +156,7 @@
 				oldStore.push({
 					name: $page.params.id,
 					repeat: 1,
-					text: "",
+					text: "If you follow me, the score will be higher.",
 				});
 
 				return oldStore;
