@@ -19,6 +19,7 @@
 		invokeCamera,
 		loadDiva,
 		rotateBones,
+		removeObject3D,
 	} from "../../../utils/ropes";
 	import ThreeScene from "../../../lib/ThreeScene";
 
@@ -46,7 +47,7 @@
 					(result: PoseLandmarkerResult) => {
 						const worldLandmarks: WorldPoseLandmarks =
 							result.worldLandmarks[0];
-						console.log(worldLandmarks);
+						// console.log(worldLandmarks);
 						// calculate the rotation of each bone based on the landmarks
 						jointsPos2Rot.applyPose2Bone(worldLandmarks);
 						// console.log(jointsPos2Rot.getRotationsArray());
@@ -68,6 +69,8 @@
 			return;
 		}
 
+		threeScene = ThreeScene.getInstance();
+
 		if (video instanceof HTMLVideoElement) {
 			video.onloadeddata = () => {
 				camera_ready = true;
@@ -81,7 +84,7 @@
 			ApiRequest.getAnimationData($page.params.id),
 			FilesetResolver.forVisionTasks(`/task-vision/`),
 		]).then(([shadow, animData, vision]) => {
-			threeScene = ThreeScene.getInstance();
+			shadow.name = "shadow";
 
 			shadow.traverse((node: THREE.Object3D) => {
 				// @ts-ignore
@@ -139,6 +142,10 @@
 	onDestroy(() => {
 		if (browser) {
 			cancelAnimationFrame(animation_pointer);
+			// remove the shadow object from the scene
+			if (threeScene) {
+				removeObject3D(threeScene.scene.getObjectByName("shadow"));
+			}
 		}
 		gymReadyStoreUnsubscribe();
 	});

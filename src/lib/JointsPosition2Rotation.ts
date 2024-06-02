@@ -251,7 +251,7 @@ export default class JointsPosition2Rotation {
 
         this.pose3d = pose3D;
 
-        // afjust the coordinate system from videopose3d to threejs
+        // afjust the coordinate system from mediapipe to threejs
         for (let i in this.pose3d) {
             this.pose3d[i].y = -this.pose3d[i].y;
             this.pose3d[i].z = -this.pose3d[i].z;
