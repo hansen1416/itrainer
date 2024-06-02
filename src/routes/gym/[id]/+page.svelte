@@ -214,13 +214,7 @@
 </script>
 
 <section>
-	<video
-		bind:this={video}
-		autoPlay={true}
-		width={480 / 2}
-		height={360 / 2}
-		style="position: absolute; top:0; left: 0; display: none;"
-	>
+	<video bind:this={video} autoPlay={true} width={480 / 2} height={360 / 2}>
 		<track label="English" kind="captions" default />
 	</video>
 
@@ -241,6 +235,15 @@
 </section>
 
 <style lang="scss">
+	video {
+		position: absolute;
+		top: 0;
+		left: 0;
+		display: block;
+		-webkit-transform: scaleX(-1);
+		transform: scaleX(-1);
+	}
+
 	.controls {
 		position: absolute;
 		bottom: 0;
