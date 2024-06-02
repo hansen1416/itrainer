@@ -248,6 +248,10 @@
 			&.hide {
 				display: none;
 			}
+
+			input {
+				color: white;
+			}
 		}
 
 		.video-box {
