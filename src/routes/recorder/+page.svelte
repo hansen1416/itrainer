@@ -282,7 +282,7 @@
 		height: $height;
 		right: 32px;
 		top: 50%;
-		margin-top: $height / -2;
+		margin-top: calc($height / -2);
 		button {
 			width: 100%;
 			height: 32px;
