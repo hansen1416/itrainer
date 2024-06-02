@@ -19,6 +19,7 @@
 		invokeCamera,
 		loadDiva,
 		rotateBones,
+		readModelBones,
 		removeObject3D,
 	} from "../../../utils/ropes";
 	import ThreeScene from "../../../lib/ThreeScene";
@@ -32,10 +33,11 @@
 	let camera_ready = false;
 	let detector_ready = false;
 
-	let poseLandmarkerDetector: PoseLandmarker;
+	let bonesAnya: { [key: string]: THREE.Bone } = {};
+	let bonesShadow: { [key: string]: THREE.Bone } = {};
 
-	let bones: { [key: string]: THREE.Bone } = {};
-	// convert pose landmarks to bone rotations, mirror is true
+	let poseLandmarkerDetector: PoseLandmarker;
+	// convert pose landmarks to bone rotations, mirror is true for web camera
 	let jointsPos2Rot = new JointsPosition2Rotation(true);
 
 	function animate() {
@@ -52,7 +54,10 @@
 						jointsPos2Rot.applyPose2Bone(worldLandmarks);
 						// console.log(jointsPos2Rot.getRotationsArray());
 						// apply the rotation to the bones of the model
-						rotateBones(jointsPos2Rot.getRotationsArray(), bones);
+						rotateBones(
+							jointsPos2Rot.getRotationsArray(),
+							bonesShadow,
+						);
 						// save the rotation data of the frame for the animation
 					},
 				);
@@ -84,6 +89,11 @@
 			ApiRequest.getAnimationData($page.params.id),
 			FilesetResolver.forVisionTasks(`/task-vision/`),
 		]).then(([shadow, animData, vision]) => {
+			readModelBones(
+				threeScene.scene.getObjectByName("diva") as THREE.Object3D,
+				bonesAnya,
+			);
+
 			shadow.name = "shadow";
 
 			shadow.traverse((node: THREE.Object3D) => {
@@ -100,9 +110,9 @@
 				// @ts-ignore
 				if (node.isBone) {
 					// @ts-ignore
-					if (bones[node.name] === undefined) {
+					if (bonesShadow[node.name] === undefined) {
 						// somehow maximo has double bones, so only use the first one
-						bones[node.name] = node as THREE.Bone;
+						bonesShadow[node.name] = node as THREE.Bone;
 					}
 				}
 			});
