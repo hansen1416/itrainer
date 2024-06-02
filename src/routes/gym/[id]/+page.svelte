@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { onDestroy } from "svelte";
+	import { onMount, onDestroy } from "svelte";
 	import { page } from "$app/stores";
 	import * as THREE from "three";
 	import { PoseLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
@@ -31,8 +31,12 @@
 
 	let video: HTMLVideoElement;
 
+	// when video.loadeddata is fired, set camera_ready to true
 	let camera_ready = false;
+	// when poseLandmarkerDetector is ready, set detector_ready to true
 	let detector_ready = false;
+	// toggle to capture the pose or not
+	let capture_pose = true;
 
 	let bonesAnya: { [key: string]: THREE.Bone } = {};
 	let bonesShadow: { [key: string]: THREE.Bone } = {};
@@ -45,8 +49,13 @@
 
 	let timer: number = 0;
 
+	onMount(() => {
+		// initialize camera
+		invokeCamera(video, () => {});
+	});
+
 	function animate() {
-		if (detector_ready && camera_ready && timer % 3 == 0) {
+		if (detector_ready && camera_ready && capture_pose && timer % 3 == 0) {
 			// do something every 3 frames
 			try {
 				poseLandmarkerDetector.detectForVideo(
@@ -248,13 +257,9 @@
 	<div class="controls">
 		<div>
 			<button
-				class={camera_ready ? "active" : ""}
+				class={capture_pose ? "active" : ""}
 				on:click={() => {
-					if (camera_ready) {
-						return;
-					}
-					// initialize camera
-					invokeCamera(video, () => {});
+					capture_pose = !capture_pose;
 				}}><img src="/svg/camera.svg" alt="Play" /></button
 			>
 		</div>
