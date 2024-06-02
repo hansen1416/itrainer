@@ -6,7 +6,7 @@
 
 	controlType.subscribe((value) => {
 		if (value === "translation") {
-			color = "#ccc";
+			color = "#aaa";
 		} else {
 			color = "#fff";
 		}

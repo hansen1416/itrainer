@@ -93,8 +93,6 @@
 
 	let drag_start: THREE.Vector2 = new THREE.Vector2();
 
-	let allDone: boolean = false;
-
 	let displaySceneUnscribe: Function;
 	let controlTypeUnscribe: Function;
 	let selectedAnimationKeyUnsubscribe: Function;
@@ -205,8 +203,6 @@
 						},
 					);
 				});
-
-			allDone = true;
 		});
 	});
 
@@ -453,7 +449,7 @@
 	}
 </script>
 
-<section class="three-editor">
+<section>
 	<canvas bind:this={canvas} />
 
 	<div class="control-box">
@@ -481,10 +477,6 @@
 	</div>
 </section>
 
-{#if allDone}
-	<div id="done"></div>
-{/if}
-
 <style lang="scss">
 	canvas {
 		width: 100vw;
@@ -501,22 +493,19 @@
 		margin-left: -40vw;
 	}
 
-	#done {
-		position: absolute;
-		bottom: -1;
-		left: 0;
-	}
-
 	.actions {
 		position: absolute;
 		bottom: 300px;
-		right: 16px;
+		right: 32px;
 		display: flex;
 		flex-direction: column;
 
 		button {
-			font-size: 16px;
-			margin-left: 16px;
+			color: #fff;
+			font-size: 18px;
+			font-weight: bold;
+			margin: 0 0 16px 16px;
+			text-align: right;
 		}
 	}
 </style>

@@ -8,7 +8,7 @@
 		if (value === "mesh") {
 			color = "#fff";
 		} else {
-			color = "#ccc";
+			color = "#aaa";
 		}
 	});
 </script>

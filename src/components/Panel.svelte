@@ -127,7 +127,7 @@
 	.panel {
 		position: absolute;
 		top: 25vh;
-		right: 30px;
+		right: 32px;
 		width: auto;
 		height: auto;
 		display: flex;

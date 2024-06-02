@@ -6,7 +6,7 @@
 
 	displayScene.subscribe((value) => {
 		if (value === "mesh") {
-			color = "#ccc";
+			color = "#aaa";
 		} else {
 			color = "#fff";
 		}

@@ -134,7 +134,7 @@
 	</div>
 </div>
 
-<style>
+<style lang="scss">
 	.slidecontainer {
 		width: 100%; /* Width of the outside container */
 	}
@@ -146,6 +146,17 @@
 		align-items: center;
 		width: 100%;
 		height: 20px;
+
+		button {
+			color: white;
+			margin-left: 12px;
+			font-size: 16px;
+			font-weight: bold;
+
+			&:disabled {
+				color: #aaa;
+			}
+		}
 	}
 
 	.slide-box {
@@ -166,40 +177,44 @@
 		top: 0;
 		width: 10px;
 		height: 20px;
-	}
 
-	.keyframe .upper-nob {
-		width: 10px;
-		height: 10px;
-		background-color: #000;
-	}
+		$bg: rgb(20 165 235);
 
-	.keyframe .lower-nob {
-		width: 0px;
-		height: 0px;
-		border-top: 10px solid #000;
-		border-left: 5px solid transparent;
-		border-right: 5px solid transparent;
-	}
+		.upper-nob {
+			width: 10px;
+			height: 10px;
+			background-color: $bg;
+		}
 
-	.keyframe .needle {
-		position: absolute;
-		top: 20px;
-		left: 4px;
-		width: 2px;
-		height: 20px;
-		background-color: #000;
-	}
+		.lower-nob {
+			width: 0px;
+			height: 0px;
+			border-top: 10px solid $bg;
+			border-left: 5px solid transparent;
+			border-right: 5px solid transparent;
+		}
+		.needle {
+			position: absolute;
+			top: 20px;
+			left: 4px;
+			width: 2px;
+			height: 20px;
+			background-color: $bg;
+		}
 
-	.keyframe.disabled .upper-nob {
-		background-color: #ccc;
-	}
+		&.disabled {
+			$bg: #aaa;
+			.upper-nob {
+				background-color: $bg;
+			}
 
-	.keyframe.disabled .lower-nob {
-		border-top: 10px solid #ccc;
-	}
+			.lower-nob {
+				border-top: 10px solid $bg;
+			}
 
-	.keyframe.disabled .needle {
-		background-color: #ccc;
+			.needle {
+				background-color: $bg;
+			}
+		}
 	}
 </style>

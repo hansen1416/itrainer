@@ -4,7 +4,7 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
     overflow: hidden;
-    background-color: #008dda;
+    background-color: rgb(0 40 80);
 }
 
 a {
@@ -39,4 +39,21 @@ button {
     &:hover {
         opacity: 0.8;
     }
+}
+
+.right-sider {
+
+    $width: 66px;
+    $height: 500px;
+
+    position: absolute;
+    width: $width;
+    height: $height;
+    right: 32px;
+    top: 50%;
+    margin-top: $height / -2;
+    background-color: rgba(0, 0, 0, .5);
+    border: 1px solid #ffffff2b;
+    border-radius: $width / 2;
+    color: white;
 }
