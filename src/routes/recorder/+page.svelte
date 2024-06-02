@@ -166,62 +166,62 @@
 
 <section>
 	<div class="left-hand">
-		<div class="video-box">
+		<div class="input-box" class:hide={videoReady}>
+			<input type="file" accept="video/*" on:change={uploadVideo} />
+		</div>
+		<div class="video-box" class:hide={!videoReady}>
 			<video controls={false} bind:this={video}>
 				<track kind="captions" srclang="en" label="English" default />
 			</video>
 		</div>
-		<div class="input-box">
-			<input type="file" accept="video/*" on:change={uploadVideo} />
-		</div>
-		<div class="extract">
-			<button
-				disabled={!videoReady || !video}
-				class:disabled={startExtract}
-				on:click={() => {
-					startExtract = !startExtract;
-
-					if (video) {
-						video.currentTime = 0;
-						video.play();
-					}
-				}}>Extract</button
-			>
-		</div>
-		{#if extractDone}
-			<div class="done-btns">
-				<button
-					on:click={() => {
-						const data = animationData.exportData();
-
-						ApiRequest.saveAnimationData(data).then((res) => {
-							console.log(res, "saved");
-						});
-					}}>Save to mine</button
-				>
-				<button
-					on:click={() => {
-						const data = animationData.exportData();
-
-						const blob = new Blob([JSON.stringify(data, null, 2)], {
-							type: "application/json",
-						});
-						const url = URL.createObjectURL(blob);
-						const a = document.createElement("a");
-						const filename = "my_animation";
-
-						a.href = url;
-						a.download = `${filename}.json`;
-						a.click();
-
-						URL.revokeObjectURL(url);
-					}}>Download</button
-				>
-			</div>
-		{/if}
 	</div>
 	<div class="right-hand" bind:this={rightHandBlock}>
 		<canvas bind:this={canvas} />
+	</div>
+	<div class="right-sider">
+		<button
+			disabled={!videoReady || !video || startExtract}
+			class:disabled={!videoReady || !video || startExtract}
+			on:click={() => {
+				startExtract = !startExtract;
+
+				if (video) {
+					video.currentTime = 0;
+					video.play();
+				}
+			}}>Extract</button
+		>
+		<button
+			disabled={!extractDone}
+			class:disabled={!extractDone}
+			on:click={() => {
+				const data = animationData.exportData();
+
+				ApiRequest.saveAnimationData(data).then((res) => {
+					console.log(res, "saved");
+				});
+			}}>Save</button
+		>
+		<button
+			disabled={!extractDone}
+			class:disabled={!extractDone}
+			on:click={() => {
+				const data = animationData.exportData();
+
+				const blob = new Blob([JSON.stringify(data, null, 2)], {
+					type: "application/json",
+				});
+				const url = URL.createObjectURL(blob);
+				const a = document.createElement("a");
+				const filename = "my_animation";
+
+				a.href = url;
+				a.download = `${filename}.json`;
+				a.click();
+
+				URL.revokeObjectURL(url);
+			}}>Download</button
+		>
 	</div>
 </section>
 
@@ -242,41 +242,26 @@
 		left: 0;
 
 		.input-box {
-			margin: 10px 0;
 			position: absolute;
-			bottom: 0;
+			top: 30%;
+
+			&.hide {
+				display: none;
+			}
 		}
 
 		.video-box {
 			max-width: 80%;
 			max-height: 80%;
+
+			&.hide {
+				display: none;
+			}
 		}
 
 		video {
 			max-width: 100%;
 			max-height: 100%;
-		}
-
-		.extract {
-			position: absolute;
-			top: 50%;
-			right: -48px;
-			width: 96px;
-			height: 32px;
-			font-size: 18px;
-			text-align: center;
-			line-height: 30px;
-			z-index: 2;
-
-			button {
-				width: 100%;
-				height: 100%;
-				background-color: #fff;
-
-				&.disabled {
-					opacity: 0.5;
-				}
-			}
 		}
 	}
 
@@ -284,21 +269,28 @@
 		right: 0;
 	}
 
-	.done-btns {
-		position: absolute;
-		top: calc(50% + 60px);
-		right: -48px;
-		width: 96px;
-		height: auto;
-		font-size: 18px;
-		text-align: center;
-		z-index: 2;
+	.right-sider {
+		$width: 66px;
+		$height: 500px;
 
+		position: absolute;
+		width: $width;
+		height: $height;
+		right: 32px;
+		top: 50%;
+		margin-top: $height / -2;
 		button {
 			width: 100%;
 			height: 32px;
 			margin-bottom: 12px;
-			background-color: #fff;
+			color: #fff;
+			font-size: 16px;
+			font-weight: bold;
+			text-align: right;
+
+			&.disabled {
+				color: #aaa;
+			}
 		}
 	}
 </style>
