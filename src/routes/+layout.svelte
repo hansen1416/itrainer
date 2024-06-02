@@ -29,7 +29,7 @@
 	<a href="/gym">Gym</a>
 	<a href="/editor">Editor</a>
 	<a href="/recorder">Recorder</a>
-	<Dropdown title="My Animations" contentList={myAnimations} />
+	<Dropdown title="My Exercises" contentList={myAnimations} />
 </div>
 
 <style lang="scss">

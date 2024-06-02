@@ -21,6 +21,7 @@
 		rotateBones,
 		readModelBones,
 		removeObject3D,
+		poseCorrlations,
 	} from "../../../utils/ropes";
 	import ThreeScene from "../../../lib/ThreeScene";
 
@@ -40,8 +41,13 @@
 	// convert pose landmarks to bone rotations, mirror is true for web camera
 	let jointsPos2Rot = new JointsPosition2Rotation(true);
 
+	let poseSimilarity: string = "0";
+
+	let timer: number = 0;
+
 	function animate() {
-		if (detector_ready && camera_ready) {
+		if (detector_ready && camera_ready && timer % 3 == 0) {
+			// do something every 3 frames
 			try {
 				poseLandmarkerDetector.detectForVideo(
 					video,
@@ -64,9 +70,20 @@
 			} catch (e) {
 				console.error("detector error");
 			}
+
+			if (timer % 30 == 0) {
+				// update similarity score every 0.5 second
+				poseSimilarity = poseCorrlations(bonesShadow, bonesAnya);
+			}
 		}
 
 		animation_pointer = requestAnimationFrame(animate);
+
+		timer += 1;
+
+		if (timer >= 1000000) {
+			timer = 0;
+		}
 	}
 
 	const gymReadyStoreUnsubscribe = gymReady.subscribe((ready) => {
@@ -242,6 +259,10 @@
 			>
 		</div>
 	</div>
+
+	<div class="score">
+		<span>{poseSimilarity}</span>
+	</div>
 </section>
 
 <style lang="scss">
@@ -256,10 +277,17 @@
 
 	.controls {
 		position: absolute;
-		bottom: 0;
-		right: 0;
-		padding: 10px;
+		bottom: 300px;
+		right: 16px;
 		display: flex;
-		justify-content: space-between;
+		flex-direction: column;
+	}
+
+	.score {
+		position: absolute;
+		bottom: 24px;
+		right: 32px;
+		font-size: 36px;
+		color: white;
 	}
 </style>

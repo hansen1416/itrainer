@@ -29,3 +29,5 @@ export type ApplyMethod = "linear" | "slerp";
 export type WorldPoseLandmarks = { x: number, y: number, z: number, visibility: number }[];
 
 export type AnimationQueueItem = { "name": string, "repeat": number, "text": string };
+
+export type BonesDict = { [key: string]: THREE.Bone };

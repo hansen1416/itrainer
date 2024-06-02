@@ -8,7 +8,7 @@ import { type GLTF } from "@types/three/examples/jsm/loaders/GLTFLoader.d.ts"
 import { type BVH } from "@types/three/examples/jsm/loaders/BVHLoader.d.ts"
 import * as THREE from "three";
 import { PoseLandmarker } from "@mediapipe/tasks-vision";
-import type { QuaternionArray, AnimationDataObject, THREEAnimtionClip } from "../types";
+import type { QuaternionArray, AnimationDataObject, THREEAnimtionClip, BonesDict } from "../types";
 
 export function randomString(length: number): string {
     const chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
@@ -387,3 +387,64 @@ export function removeObject3D(object3D: THREE.Object3D | undefined): boolean {
 
     return true;
 }
+
+export function pearson_corr(x: number[], y: number[]): number {
+    let sumX = 0,
+        sumY = 0,
+        sumXY = 0,
+        sumX2 = 0,
+        sumY2 = 0;
+    const minLength = (x.length = y.length = Math.min(x.length, y.length)),
+        reduce = (xi: number, idx: number) => {
+            const yi = y[idx];
+            sumX += xi;
+            sumY += yi;
+            sumXY += xi * yi;
+            sumX2 += xi * xi;
+            sumY2 += yi * yi;
+        };
+    x.forEach(reduce);
+    return (
+        (minLength * sumXY - sumX * sumY) /
+        Math.sqrt(
+            (minLength * sumX2 - sumX * sumX) *
+            (minLength * sumY2 - sumY * sumY)
+        )
+    );
+}
+
+export function poseCorrlations(bones1: BonesDict, bones2: BonesDict): string {
+
+    const boneDistances = [
+        "LeftArm", "LeftForeArm", "LeftHand",
+        "RightArm", "RightForeArm", "RightHand",
+        "LeftUpLeg", "LeftLeg", "LeftFoot",
+        "RightUpLeg", "RightLeg", "RightFoot",
+    ]
+
+    const distances1 = [];
+    const distances2 = [];
+
+    for (let i = 0; i < boneDistances.length; i++) {
+        for (let j = i + 1; j < boneDistances.length; j++) {
+
+            const v11 = new THREE.Vector3();
+            const v12 = new THREE.Vector3();
+
+            bones1[boneDistances[i]].getWorldPosition(v11);
+            bones1[boneDistances[j]].getWorldPosition(v12);
+
+            distances1.push(v11.distanceTo(v12));
+
+            const v21 = new THREE.Vector3();
+            const v22 = new THREE.Vector3();
+
+            bones2[boneDistances[i]].getWorldPosition(v21);
+            bones2[boneDistances[j]].getWorldPosition(v22);
+
+            distances2.push(v21.distanceTo(v22));
+        }
+    }
+
+    return (pearson_corr(distances1, distances2) * 100).toFixed(2);
+} 
