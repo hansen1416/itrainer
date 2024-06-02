@@ -68,9 +68,11 @@
 			return;
 		}
 
-		video.onloadeddata = () => {
-			camera_ready = true;
-		};
+		if (video instanceof HTMLVideoElement) {
+			video.onloadeddata = () => {
+				camera_ready = true;
+			};
+		}
 
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker

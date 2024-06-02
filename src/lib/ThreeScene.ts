@@ -14,7 +14,7 @@ export default class ThreeScene {
 
     controls: OrbitControls;
 
-    private static _instance: ThreeScene;
+    private static _instance: ThreeScene | null = null;
 
 
     public static getInstance(canvas: HTMLCanvasElement | null = null, width: number = 0, height: number = 0, initialCameraPosition: THREE.Vector3 = new THREE.Vector3(0, 0.6, 2)): ThreeScene {
@@ -100,6 +100,8 @@ export default class ThreeScene {
         // this.renderer.context = null;
         // this.renderer.domElement = null;
         // this.renderer = null;
+
+        ThreeScene._instance = null;
     }
 
     onFrameUpdate(stats: Stats | null = null) {
