@@ -52,9 +52,17 @@
 	onMount(() => {
 		// initialize camera
 		invokeCamera(video, () => {});
+
+		if (video instanceof HTMLVideoElement) {
+			video.onloadeddata = () => {
+				camera_ready = true;
+			};
+		}
 	});
 
 	function animate() {
+		console.log(detector_ready, camera_ready, capture_pose);
+
 		if (detector_ready && camera_ready && capture_pose && timer % 3 == 0) {
 			// do something every 3 frames
 			try {
@@ -101,12 +109,6 @@
 		}
 
 		threeScene = ThreeScene.getInstance();
-
-		if (video instanceof HTMLVideoElement) {
-			video.onloadeddata = () => {
-				camera_ready = true;
-			};
-		}
 
 		// load the animation data by `$page.params.id`
 		// and load mediapipe pose landmarker
