@@ -5,7 +5,10 @@
 			from it, click save when it's done
 		</p>
 		<video controls={true}>
-			<source src="/videos/step1.webm" type="video/webm" />
+			<source
+				src="https://itrainer.oss-ap-southeast-1.aliyuncs.com/step1.webm"
+				type="video/webm"
+			/>
 			<track label="English" kind="captions" default />
 		</video>
 	</div>
@@ -15,7 +18,10 @@
 			exercise
 		</p>
 		<video controls={true}>
-			<source src="/videos/step2.webm" type="video/webm" />
+			<source
+				src="https://itrainer.oss-ap-southeast-1.aliyuncs.com/step2.webm"
+				type="video/webm"
+			/>
 			<track label="English" kind="captions" default />
 		</video>
 	</div>
@@ -25,7 +31,10 @@
 			close you follow the higher the score.
 		</p>
 		<video controls={true}>
-			<source src="/videos/step3.webm" type="video/webm" />
+			<source
+				src="https://itrainer.oss-ap-southeast-1.aliyuncs.com/step3.webm"
+				type="video/webm"
+			/>
 			<track label="English" kind="captions" default />
 		</video>
 	</div>
@@ -46,7 +55,6 @@
 		padding: 60px 0 60px 0;
 		background: rgba(0, 0, 0, 0.5);
 		margin-top: 60px;
-		// overflow: scroll;
 		height: 1400px;
 
 		div {
