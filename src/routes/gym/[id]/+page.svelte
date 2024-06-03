@@ -115,7 +115,7 @@
 		Promise.all([
 			loadDiva(),
 			ApiRequest.getAnimationData($page.params.id),
-			FilesetResolver.forVisionTasks(`/task-vision/`),
+			FilesetResolver.forVisionTasks(`/task-vision`),
 		]).then(([shadow, animData, vision]) => {
 			readModelBones(
 				threeScene.scene.getObjectByName("diva") as THREE.Object3D,

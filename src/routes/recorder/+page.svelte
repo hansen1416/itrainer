@@ -89,7 +89,7 @@
 
 		Promise.all([
 			loadGLTF(`/glb/dors.glb`),
-			FilesetResolver.forVisionTasks(`/task-vision/`),
+			FilesetResolver.forVisionTasks(`/task-vision`),
 		]).then(([gltf, vision]) => {
 			diva = gltf.scene.children[0];
 

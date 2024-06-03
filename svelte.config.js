@@ -19,7 +19,10 @@ const config = {
 			assets: 'build',
 			fallback: undefined,
 			precompress: false,
-			strict: true
+			strict: true,
+			// prerender: {
+			// 	entries: ["/", "/editor", "/recorder", "/gym", "/gym/myanim"]
+			// }
 		})
 	}
 };
